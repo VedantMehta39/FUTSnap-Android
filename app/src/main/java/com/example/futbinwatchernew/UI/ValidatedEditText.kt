@@ -5,9 +5,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
+import com.google.android.material.textfield.TextInputEditText
 
+
+const val TEXT_INPUT_EDITTEXT_MATERIAL_STYLE_ATTR = 2130903283
 class ValidatedEditText @JvmOverloads constructor(context: Context,attrs:AttributeSet? = null,
-                                                  defStyleAttr:Int = android.R.attr.editTextStyle ):
+                                                  defStyleAttr:Int = TEXT_INPUT_EDITTEXT_MATERIAL_STYLE_ATTR ):
     AppCompatEditText(context,attrs,defStyleAttr),TextWatcher {
     var isValid = false
     private var validator: Validator? = null

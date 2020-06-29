@@ -12,6 +12,7 @@ import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.SearchPlayerViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
 
 class SinglePlayerDialog:DialogFragment() {
@@ -49,10 +50,10 @@ class SinglePlayerDialog:DialogFragment() {
             ),
             requireArguments().getInt(PLAYER_CURRENT_PRICE)
         )
-        view.findViewById<TextView>(R.id.tv_current_price).text = "Current Price: " + data.currentPrice
+        view.findViewById<TextView>(R.id.tv_current_price).text = data.currentPrice.toString()
         Picasso.get().load(data.imageURL).into(view.findViewById<ImageView>(R.id.img_player))
         view.findViewById<TextView>(R.id.tv_player_name).text = (data.name + " " + data.rating.toString())
-        val targetPrice = view.findViewById<ValidatedEditText>(R.id.et_target_price)
+        val targetPrice = (view.findViewById<ValidatedEditText>(R.id.et_target_price))
         targetPrice.setValidator( object :
             Validator {
             override var errorMessage: String = ""

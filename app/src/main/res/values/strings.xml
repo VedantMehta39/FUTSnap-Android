@@ -3,4 +3,8 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="tracked_players">Tracked Players</string>
+    <string name="current_price">Current Price</string>
+    <string name="target_price">Target Price</string>
+    <string name="gte"><![CDATA[>=]]></string>
+    <string name="lt"><![CDATA[<]]></string>
 </resources>
