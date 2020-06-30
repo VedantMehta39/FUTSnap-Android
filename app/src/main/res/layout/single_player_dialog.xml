@@ -62,19 +62,23 @@
         android:orientation="horizontal"
         android:layout_margin="8dp">
         <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/platform_toggle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:gravity="center"
             app:singleSelection="true"
+            app:checkedButton="@+id/ps_button"
             >
             <Button
+                android:id="@+id/ps_button"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 app:icon="@drawable/ic_icons8_playstation"
                 style="@style/Widget.App.Button.OutlinedButton.IconOnly"
                 />
             <Button
+                android:id="@+id/xbox_button"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 app:icon="@drawable/ic_icons8_xbox"
@@ -82,18 +86,22 @@
                 />
         </com.google.android.material.button.MaterialButtonToggleGroup>
         <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/gte_lt_toggle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
             android:gravity="center"
+            app:checkedButton="@id/lt_target"
             >
             <Button
+                android:id="@+id/gte_target"
                 android:text="@string/gte"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 style="?attr/materialButtonOutlinedStyle"
                 />
             <Button
+                android:id="@+id/lt_target"
                 android:text="@string/lt"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"

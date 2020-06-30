@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.futbinwatchernew.*
 import com.example.futbinwatchernew.Database.PlayerDBModel
+import com.example.futbinwatchernew.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -55,16 +56,12 @@ class SearchedPlayersFragment:Fragment() {
                 override fun onSearchedPlayerSelected(player: SearchPlayerResponse) {
                     FUTBINWatcherApp.component["PRICE"]!!.inject(vm)
                     vm.initSelectedPlayer(player)
-                    vm.selectedPlayer.observe(viewLifecycleOwner, object: Observer<Event<PlayerDBModel>> {
-                        override fun onChanged(event: Event<PlayerDBModel>) {
+                    vm.selectedPlayer.observe(viewLifecycleOwner,
+                        Observer<Event<PlayerDialogFragModel>> { event ->
                             event.getContentIfNotHandled()?.let {
                                 SinglePlayerDialog.newInstance(it).show(parentFragmentManager,null)
                             }
-
-                        }
-
-
-                    })
+                        })
                 }
 
             }

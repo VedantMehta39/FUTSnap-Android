@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.futbinwatchernew.Database.PlayerDAO
 import com.example.futbinwatchernew.Database.PlayerDBModel
+import com.example.futbinwatchernew.Models.Platform
+import com.example.futbinwatchernew.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.UI.Event
@@ -14,10 +16,11 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class SearchPlayerViewModel():ViewModel() {
     var searchPlayersResult = MutableLiveData<List<SearchPlayerResponse>>()
-    var selectedPlayer = MutableLiveData<Event<PlayerDBModel>>()
+    var selectedPlayer = MutableLiveData<Event<PlayerDialogFragModel>>()
     @Inject lateinit var apiClient:ApiClient
     var allTrackedPlayers = ArrayList<PlayerDBModel>()
     lateinit var trackedPlayersInDb : LiveData<List<PlayerDBModel>>
@@ -34,14 +37,18 @@ class SearchPlayerViewModel():ViewModel() {
 
     fun initSelectedPlayer(data:SearchPlayerResponse){
         viewModelScope.launch {
-            val price = getPlayerCurrentPrice(data.id)
-            selectedPlayer.value = Event(PlayerDBModel(data, price))
+            val result = PlayerDialogFragModel(data.id,data.playerName,data.playerImage,
+            data.playerRating,  EnumMap<Platform,Int>(Platform::class.java)
+            )
+            result.currentPrice.put(Platform.PS,getPlayerCurrentPrice(data.id,Platform.PS))
+            result.currentPrice.put(Platform.XB, getPlayerCurrentPrice(data.id,Platform.XB))
+            selectedPlayer.value = Event(result)
         }
 
     }
 
-    private suspend fun getPlayerCurrentPrice(playerId:Int):Int{
-        val similarPlayers = apiClient.getCurrentPriceFor(playerId).data
+    private suspend fun getPlayerCurrentPrice(playerId:Int, platform: Platform):Int{
+        val similarPlayers = apiClient.getCurrentPriceFor(playerId,platform).data
         return similarPlayers.find {
             it.id == playerId
         }!!.price

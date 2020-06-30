@@ -1,5 +1,6 @@
 package com.example.futbinwatchernew.Network
 
+import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceWrapperResponse
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import retrofit2.http.GET
@@ -10,5 +11,5 @@ interface ApiClient {
     suspend fun searchPlayerNames(@Query("year") fifaVersion:Int,@Query("term") searchTerm:String ):List<SearchPlayerResponse>
 
     @GET("?platform=PS")
-    suspend fun getCurrentPriceFor(@Query("ID")playerId:Int):PlayerPriceWrapperResponse
+    suspend fun getCurrentPriceFor(@Query("ID")playerId:Int,@Query("platform")platform:Platform):PlayerPriceWrapperResponse
 }

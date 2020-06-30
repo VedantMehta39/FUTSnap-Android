@@ -12,40 +12,91 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.example.futbinwatchernew.UI.ValidatedEditText
-                android:id="@+id/et_target_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:gravity="end"
-                android:maxLines="1"
-                android:imeOptions="actionDone"
-                app:layout_constraintHorizontal_weight="0.3"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/tv_player_name"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_player_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                app:layout_constraintHorizontal_weight="0.4"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/img_player"
-                app:layout_constraintRight_toLeftOf="@+id/et_target_price"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <ImageView
                 android:id="@+id/img_player"
                 android:layout_width="0dp"
-                android:layout_height="64dp"
+                android:layout_height="match_parent"
                 app:layout_constraintHorizontal_weight="0.3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/tv_player_name"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_launcher_background" />
+
+            <TextView
+                android:id="@+id/tv_player_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/parent_layout_target_price"
+                app:layout_constraintHorizontal_weight="0.4"
+                app:layout_constraintLeft_toRightOf="@+id/img_player"
+                app:layout_constraintRight_toLeftOf="@+id/platform_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/platform_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/parent_layout_target_price"
+                app:layout_constraintHorizontal_weight="0.1"
+                app:layout_constraintLeft_toRightOf="@id/tv_player_name"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/parent_layout_target_price"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:hint="@string/target_price"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="0.4"
+                app:layout_constraintLeft_toRightOf="@id/img_player"
+                app:layout_constraintRight_toLeftOf="@+id/gte_lt_toggle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_player_name">
+
+                <com.example.futbinwatchernew.UI.ValidatedEditText
+                    android:id="@+id/et_target_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/gte_lt_toggle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="0.1"
+                app:layout_constraintLeft_toRightOf="@+id/parent_layout_target_price"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_player_name">
+
+                <Button
+                    android:id="@+id/gte_target"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_arrow_drop_up_24px" />
+
+                <Button
+                    android:id="@+id/lt_target"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_arrow_drop_down_24px" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

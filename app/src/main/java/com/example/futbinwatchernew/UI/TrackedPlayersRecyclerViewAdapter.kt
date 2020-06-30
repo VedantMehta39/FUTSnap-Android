@@ -7,7 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.futbinwatchernew.Database.PlayerDBModel
+import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.R
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.squareup.picasso.Picasso
 
 class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerDBModel>):RecyclerView.Adapter<TrackedPlayersRecyclerViewAdapter.MyViewHolder>(){
@@ -15,9 +17,24 @@ class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerDBModel>):RecyclerV
         val playerNameTextView = view.findViewById<TextView>(R.id.tv_player_name)
         val playerImageView = view.findViewById<ImageView>(R.id.img_player)
         val playerTargetPriceView = view.findViewById<ValidatedEditText>(R.id.et_target_price)
+        val platformImageView = view.findViewById<ImageView>(R.id.platform_icon)
+        val gte_lt_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.gte_lt_toggle)
         fun bindData(data: PlayerDBModel){
             playerNameTextView.text = (data.name + " " + data.rating)
             playerTargetPriceView.setText(data.targetPrice.toString())
+            when(data.platform){
+                Platform.PS -> platformImageView.setImageResource(R.drawable.ic_icons8_playstation)
+                Platform.XB -> platformImageView.setImageResource(R.drawable.ic_icons8_xbox)
+
+            }
+
+            if(data.gte){
+                gte_lt_toggle.check(R.id.gte_target)
+            }
+            if(data.lt){
+                gte_lt_toggle.check(R.id.lt_target)
+            }
+
             playerTargetPriceView.setValidator(object :
                 Validator {
                 override var errorMessage: String = ""
