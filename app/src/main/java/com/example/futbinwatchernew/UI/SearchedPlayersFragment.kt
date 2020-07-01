@@ -48,7 +48,6 @@ class SearchedPlayersFragment:Fragment() {
 
         })
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-
         val adapter = SearchPlayersRecyclerViewAdapter(
             emptyList(),
             parentFragmentManager,
@@ -59,7 +58,9 @@ class SearchedPlayersFragment:Fragment() {
                     vm.selectedPlayer.observe(viewLifecycleOwner,
                         Observer<Event<PlayerDialogFragModel>> { event ->
                             event.getContentIfNotHandled()?.let {
-                                SinglePlayerDialog.newInstance(it).show(parentFragmentManager,null)
+                                if (parentFragmentManager.findFragmentByTag("PLAYER_DIALOG_FRAG") == null){
+                                    SinglePlayerDialog.newInstance(it).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
+                                }
                             }
                         })
                 }
