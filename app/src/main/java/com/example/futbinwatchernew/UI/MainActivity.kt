@@ -39,10 +39,10 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        setContentView(R.layout.tracked_players_fragment_container)
         val frag = TrackedPlayersFragment.newInstance()
         if(item.itemId == R.id.players_list_button){
             if (!frag.isAdded){
+                setContentView(R.layout.tracked_players_fragment_container)
                 supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragment_container_view_tag,
