@@ -11,12 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.futbinwatchernew.Database.PlayerDBModel
 import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.Models.PlayerDialogFragModel
-import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.SearchPlayerViewModel
+import com.example.futbinwatchernew.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -29,17 +28,22 @@ class SinglePlayerDialog:DialogFragment() {
         const val PS_PLAYER_CURRENT_PRICE = "PS_PLAYER_CURRENT_PRICE"
         const val XBOX_PLAYER_CURRENT_PRICE = "XBOX_PLAYER_CURRENT_PRICE"
         const val PLAYER_IMAGE_FILE_PATH = "PLAYER_IMAGE_FILE_PATH"
+        var instance:SinglePlayerDialog? = null
 
-
-        fun newInstance(data: PlayerDialogFragModel) = SinglePlayerDialog().apply {
-            arguments = Bundle().apply {
-                putInt(PLAYER_ID, data.id)
-                putInt(PLAYER_RATING, data.rating)
-                putString(PLAYER_NAME, data.name)
-                putInt(PS_PLAYER_CURRENT_PRICE, data.currentPrice.get(Platform.PS)!!)
-                putInt(XBOX_PLAYER_CURRENT_PRICE,data.currentPrice.get(Platform.XB)!!)
-                putString(PLAYER_IMAGE_FILE_PATH, data.imageURL)
+        fun newInstance(data: PlayerDialogFragModel):SinglePlayerDialog {
+            if (instance == null){
+                instance = SinglePlayerDialog().apply {
+                    arguments = Bundle().apply {
+                        putInt(PLAYER_ID, data.id)
+                        putInt(PLAYER_RATING, data.rating)
+                        putString(PLAYER_NAME, data.name)
+                        putInt(PS_PLAYER_CURRENT_PRICE, data.currentPrice.get(Platform.PS)!!)
+                        putInt(XBOX_PLAYER_CURRENT_PRICE,data.currentPrice.get(Platform.XB)!!)
+                        putString(PLAYER_IMAGE_FILE_PATH, data.imageURL)
+                    }
+                }
             }
+            return instance!!
         }
 
     }
@@ -48,8 +52,8 @@ class SinglePlayerDialog:DialogFragment() {
         val builder = MaterialAlertDialogBuilder(requireContext())
         val view = requireActivity().layoutInflater.inflate(R.layout.single_player_dialog, null)
         val currentPrice = EnumMap<Platform,Int>(Platform::class.java)
-        currentPrice.put(Platform.PS,requireArguments().getInt(PS_PLAYER_CURRENT_PRICE))
-        currentPrice.put(Platform.XB,requireArguments().getInt(XBOX_PLAYER_CURRENT_PRICE))
+        currentPrice[Platform.PS] = requireArguments().getInt(PS_PLAYER_CURRENT_PRICE)
+        currentPrice[Platform.XB] = requireArguments().getInt(XBOX_PLAYER_CURRENT_PRICE)
         val data = PlayerDialogFragModel(
                 requireArguments().getInt(PLAYER_ID),
                 requireArguments().getString(PLAYER_NAME)!!,
@@ -58,14 +62,15 @@ class SinglePlayerDialog:DialogFragment() {
                 currentPrice
         )
         val currentPriceTextView = view.findViewById<TextView>(R.id.tv_current_price)
-        currentPriceTextView.text = data.currentPrice.get(Platform.PS).toString()
+
+        currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(data.currentPrice.get(Platform.PS)!!)
         Picasso.get().load(data.imageURL).into(view.findViewById<ImageView>(R.id.img_player))
         view.findViewById<TextView>(R.id.tv_player_name).text = (data.name + " " + data.rating.toString())
         view.findViewById<Button>(R.id.ps_button).setOnClickListener {
-            currentPriceTextView.text = data.currentPrice.get(Platform.PS).toString()
+            currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(data.currentPrice.get(Platform.PS)!!)
         }
         view.findViewById<Button>(R.id.xbox_button).setOnClickListener {
-            currentPriceTextView.text = data.currentPrice.get(Platform.XB).toString()
+            currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(data.currentPrice.get(Platform.XB)!!)
         }
         val targetPrice = (view.findViewById<ValidatedEditText>(R.id.et_target_price))
         targetPrice.setValidator( object :
@@ -97,7 +102,7 @@ class SinglePlayerDialog:DialogFragment() {
         val platform_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.platform_toggle)
         val gte_lt_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.gte_lt_toggle)
 
-        platform_toggle.addOnButtonCheckedListener { group, checkedId, isChecked ->
+        platform_toggle.addOnButtonCheckedListener { group, checkedId, _ ->
             if (group.checkedButtonId == -1) group.check(checkedId)
         }
 
@@ -111,7 +116,6 @@ class SinglePlayerDialog:DialogFragment() {
                 val notifiedPlayer = PlayerDBModel()
                 notifiedPlayer.id = data.id
                 notifiedPlayer.name = data.name
-                notifiedPlayer.currentPrice = currentPriceTextView.text.toString().toInt()
                 notifiedPlayer.imageURL = data.imageURL
                 notifiedPlayer.rating = data.rating
                 val chosenPlatformId = platform_toggle.checkedButtonId

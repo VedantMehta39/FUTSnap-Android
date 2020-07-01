@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.futbinwatchernew.Database.PlayerDBModel
 import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.R
+import com.example.futbinwatchernew.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.squareup.picasso.Picasso
 
@@ -21,13 +22,11 @@ class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerDBModel>):RecyclerV
         val gte_lt_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.gte_lt_toggle)
         fun bindData(data: PlayerDBModel){
             playerNameTextView.text = (data.name + " " + data.rating)
-            playerTargetPriceView.setText(data.targetPrice.toString())
+            playerTargetPriceView.setText(Util.getLocaleFormattedStringFromNumber(data.targetPrice))
             when(data.platform){
                 Platform.PS -> platformImageView.setImageResource(R.drawable.ic_icons8_playstation)
                 Platform.XB -> platformImageView.setImageResource(R.drawable.ic_icons8_xbox)
-
             }
-
             if(data.gte){
                 gte_lt_toggle.check(R.id.gte_target)
             }
@@ -60,7 +59,7 @@ class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerDBModel>):RecyclerV
             playerTargetPriceView.setPriceListener(object:
                 TrackedPriceListener {
                 override fun onPriceChanged(newPrice: String) {
-                    data.targetPrice = newPrice.toInt()
+                    data.targetPrice = Util.getNumberFromLocaleFormattedString(newPrice)
                 }
             })
             Picasso.get().load(data.imageURL).into(playerImageView)
