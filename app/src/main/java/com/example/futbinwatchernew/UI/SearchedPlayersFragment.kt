@@ -55,14 +55,9 @@ class SearchedPlayersFragment:Fragment() {
                 override fun onSearchedPlayerSelected(player: SearchPlayerResponse) {
                     FUTBINWatcherApp.component["PRICE"]!!.inject(vm)
                     vm.initSelectedPlayer(player)
-                    vm.selectedPlayer.observe(viewLifecycleOwner,
-                        Observer<Event<PlayerDialogFragModel>> { event ->
-                            event.getContentIfNotHandled()?.let {
-                                if (parentFragmentManager.findFragmentByTag("PLAYER_DIALOG_FRAG") == null){
-                                    SinglePlayerDialog.newInstance(it).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
-                                }
-                            }
-                        })
+                    if (parentFragmentManager.findFragmentByTag("PLAYER_DIALOG_FRAG") == null){
+                        SinglePlayerDialog.newInstance().show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
+                    }
                 }
 
             }

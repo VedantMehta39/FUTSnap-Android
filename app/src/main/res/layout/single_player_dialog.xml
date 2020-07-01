@@ -7,13 +7,21 @@
     android:paddingTop="30dp"
     >
 
+    <ProgressBar
+        android:id="@+id/dialog_load_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="visible"/>
+
     <ImageView
 
         android:id="@+id/img_player"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_gravity="center_horizontal"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:srcCompat="@drawable/ic_launcher_background"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_player_name"
@@ -23,7 +31,8 @@
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -37,7 +46,8 @@
             android:id="@+id/tv_current_price"
             android:layout_width="match_parent"
             android:enabled="false"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -53,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
+            android:visibility="gone"
             />
     </com.google.android.material.textfield.TextInputLayout>
     
@@ -69,6 +80,7 @@
             android:gravity="center"
             app:singleSelection="true"
             app:checkedButton="@+id/ps_button"
+            android:visibility="gone"
             >
             <Button
                 android:id="@+id/ps_button"
@@ -92,6 +104,7 @@
             android:layout_weight="0.7"
             android:gravity="center"
             app:checkedButton="@id/lt_target"
+            android:visibility="gone"
             >
             <Button
                 android:id="@+id/gte_target"

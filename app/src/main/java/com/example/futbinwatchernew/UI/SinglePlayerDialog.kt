@@ -3,45 +3,32 @@ package com.example.futbinwatchernew.UI
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
 import com.example.futbinwatchernew.Database.PlayerDBModel
 import com.example.futbinwatchernew.Models.Platform
-import com.example.futbinwatchernew.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.SearchPlayerViewModel
 import com.example.futbinwatchernew.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
-import java.util.*
 
 class SinglePlayerDialog:DialogFragment() {
 
     companion object{
-        const val PLAYER_RATING = "PLAYER_RATING"
-        const val PLAYER_ID = "PLAYER_ID"
-        const val PLAYER_NAME = "PLAYER_NAME"
-        const val PS_PLAYER_CURRENT_PRICE = "PS_PLAYER_CURRENT_PRICE"
-        const val XBOX_PLAYER_CURRENT_PRICE = "XBOX_PLAYER_CURRENT_PRICE"
-        const val PLAYER_IMAGE_FILE_PATH = "PLAYER_IMAGE_FILE_PATH"
+
         var instance:SinglePlayerDialog? = null
 
-        fun newInstance(data: PlayerDialogFragModel):SinglePlayerDialog {
+        fun newInstance():SinglePlayerDialog {
             if (instance == null){
-                instance = SinglePlayerDialog().apply {
-                    arguments = Bundle().apply {
-                        putInt(PLAYER_ID, data.id)
-                        putInt(PLAYER_RATING, data.rating)
-                        putString(PLAYER_NAME, data.name)
-                        putInt(PS_PLAYER_CURRENT_PRICE, data.currentPrice.get(Platform.PS)!!)
-                        putInt(XBOX_PLAYER_CURRENT_PRICE,data.currentPrice.get(Platform.XB)!!)
-                        putString(PLAYER_IMAGE_FILE_PATH, data.imageURL)
-                    }
-                }
+                instance = SinglePlayerDialog()
             }
             return instance!!
         }
@@ -51,92 +38,108 @@ class SinglePlayerDialog:DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = MaterialAlertDialogBuilder(requireContext())
         val view = requireActivity().layoutInflater.inflate(R.layout.single_player_dialog, null)
-        val currentPrice = EnumMap<Platform,Int>(Platform::class.java)
-        currentPrice[Platform.PS] = requireArguments().getInt(PS_PLAYER_CURRENT_PRICE)
-        currentPrice[Platform.XB] = requireArguments().getInt(XBOX_PLAYER_CURRENT_PRICE)
-        val data = PlayerDialogFragModel(
-                requireArguments().getInt(PLAYER_ID),
-                requireArguments().getString(PLAYER_NAME)!!,
-                requireArguments().getString(PLAYER_IMAGE_FILE_PATH)!!,
-                requireArguments().getInt(PLAYER_RATING),
-                currentPrice
-        )
-        val currentPriceTextView = view.findViewById<TextView>(R.id.tv_current_price)
-
-        currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(data.currentPrice.get(Platform.PS)!!)
-        Picasso.get().load(data.imageURL).into(view.findViewById<ImageView>(R.id.img_player))
-        view.findViewById<TextView>(R.id.tv_player_name).text = (data.name + " " + data.rating.toString())
-        view.findViewById<Button>(R.id.ps_button).setOnClickListener {
-            currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(data.currentPrice.get(Platform.PS)!!)
-        }
-        view.findViewById<Button>(R.id.xbox_button).setOnClickListener {
-            currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(data.currentPrice.get(Platform.XB)!!)
-        }
-        val targetPrice = (view.findViewById<ValidatedEditText>(R.id.et_target_price))
-        targetPrice.setValidator( object :
-            Validator {
-            override var errorMessage: String = ""
-                get() = field
-
-            override fun validate(data: String): Boolean {
-                if(data.isEmpty()){
-                    errorMessage = "Target Price cannot be empty"
-                    return false
-                }
-                if(data.contains("-")){
-                    errorMessage = "Target Price cannot be negative"
-                    return false
-                }
-                if(data.contains(".")){
-                    errorMessage = "Target Price has to be a whole number"
-                    return false
-                }
-                return true
-            }
-
-        })
-        builder.setView(view).setNegativeButton(R.string.cancel) { _, _ ->
-            dialog!!.cancel()
+        builder.setView(view).setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.cancel()
         }.setPositiveButton(R.string.ok,null)
-
-        val platform_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.platform_toggle)
-        val gte_lt_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.gte_lt_toggle)
-
-        platform_toggle.addOnButtonCheckedListener { group, checkedId, _ ->
-            if (group.checkedButtonId == -1) group.check(checkedId)
-        }
-
-
-
-
         val dialog = builder.create()
         dialog.show()
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            if (targetPrice.isValid and gte_lt_toggle.checkedButtonIds.isNotEmpty()) {
-                val notifiedPlayer = PlayerDBModel()
-                notifiedPlayer.id = data.id
-                notifiedPlayer.name = data.name
-                notifiedPlayer.imageURL = data.imageURL
-                notifiedPlayer.rating = data.rating
-                val chosenPlatformId = platform_toggle.checkedButtonId
-                val chosenComparisonDirectionIds = gte_lt_toggle.checkedButtonIds
-                when(chosenPlatformId){
-                    R.id.ps_button -> notifiedPlayer.platform = Platform.PS
-                    R.id.xbox_button -> notifiedPlayer.platform = Platform.XB
+
+
+        val playerImageView = view.findViewById<ImageView>(R.id.img_player)
+        val currentPriceTextView = view.findViewById<TextView>(R.id.tv_current_price)
+        val targetPrice = (view.findViewById<ValidatedEditText>(R.id.et_target_price))
+        val playerNameTextView = view.findViewById<TextView>(R.id.tv_player_name)
+        val psPlatformButton = view.findViewById<Button>(R.id.ps_button)
+        val xboxPlatformButton = view.findViewById<Button>(R.id.xbox_button)
+        val platform_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.platform_toggle)
+        val gte_lt_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.gte_lt_toggle)
+        val progressBar = view.findViewById<ProgressBar>(R.id.dialog_load_spinner)
+        progressBar.visibility = View.VISIBLE
+
+        val vm = ViewModelProvider(requireActivity()).get(SearchPlayerViewModel::class.java)
+
+        vm.selectedPlayer.observe(this, Observer{
+            it.getContentIfNotHandled()?.let {
+                currentPriceTextView.visibility = View.VISIBLE
+                targetPrice.visibility = View.VISIBLE
+                playerNameTextView.visibility = View.VISIBLE
+                psPlatformButton.visibility = View.VISIBLE
+                xboxPlatformButton.visibility = View.VISIBLE
+                platform_toggle.visibility = View.VISIBLE
+                gte_lt_toggle.visibility = View.VISIBLE
+                playerImageView.visibility = View.VISIBLE
+
+
+                progressBar.visibility = View.GONE
+
+                currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(it.currentPrice.get(Platform.PS)!!)
+                Picasso.get().load(it.imageURL).into(playerImageView)
+                playerNameTextView.text = (it.name + " " + it.rating.toString())
+                psPlatformButton.setOnClickListener {_ ->
+                    currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(it.currentPrice.get(Platform.PS)!!)
                 }
-                if(chosenComparisonDirectionIds.contains(R.id.gte_target)){
-                    notifiedPlayer.gte = true
+                xboxPlatformButton.setOnClickListener {_ ->
+                    currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(it.currentPrice.get(Platform.XB)!!)
                 }
-                if(chosenComparisonDirectionIds.contains(R.id.lt_target)){
-                    notifiedPlayer.lt = true
+
+
+                platform_toggle.addOnButtonCheckedListener { group, checkedId, _ ->
+                    if (group.checkedButtonId == -1) group.check(checkedId)
                 }
-                notifiedPlayer.targetPrice = targetPrice.text.toString().toInt()
-                val vm = ViewModelProvider(requireActivity()).get(SearchPlayerViewModel::class.java)
-                vm.allTrackedPlayers.add(notifiedPlayer)
-                this.dismiss()
-                dialog.cancel()
+
+                targetPrice.setValidator( object :
+                    Validator {
+                    override var errorMessage: String = ""
+                        get() = field
+
+                    override fun validate(data: String): Boolean {
+                        if(data.isEmpty()){
+                            errorMessage = "Target Price cannot be empty"
+                            return false
+                        }
+                        if(data.contains("-")){
+                            errorMessage = "Target Price cannot be negative"
+                            return false
+                        }
+                        if(data.contains(".")){
+                            errorMessage = "Target Price has to be a whole number"
+                            return false
+                        }
+                        return true
+                    }
+
+                })
+
+
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {_ ->
+                    if (targetPrice.isValid and gte_lt_toggle.checkedButtonIds.isNotEmpty()) {
+                        val notifiedPlayer = PlayerDBModel()
+                        notifiedPlayer.id = it.id
+                        notifiedPlayer.name = it.name
+                        notifiedPlayer.imageURL = it.imageURL
+                        notifiedPlayer.rating = it.rating
+                        val chosenPlatformId = platform_toggle.checkedButtonId
+                        val chosenComparisonDirectionIds = gte_lt_toggle.checkedButtonIds
+                        when(chosenPlatformId){
+                            R.id.ps_button -> notifiedPlayer.platform = Platform.PS
+                            R.id.xbox_button -> notifiedPlayer.platform = Platform.XB
+                        }
+                        if(chosenComparisonDirectionIds.contains(R.id.gte_target)){
+                            notifiedPlayer.gte = true
+                        }
+                        if(chosenComparisonDirectionIds.contains(R.id.lt_target)){
+                            notifiedPlayer.lt = true
+                        }
+                        notifiedPlayer.targetPrice = targetPrice.text.toString().toInt()
+                        vm.allTrackedPlayers.add(notifiedPlayer)
+                        this.dismiss()
+                        dialog.cancel()
+                    }
+                }
+
             }
-        }
+        })
+
         return dialog
     }
 
