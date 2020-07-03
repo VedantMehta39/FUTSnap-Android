@@ -10,9 +10,11 @@ import com.example.futbinwatchernew.Database.PlayerDBModel
 import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ApiClient
+import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceResponse
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.UI.Event
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -30,43 +32,46 @@ class SearchPlayerViewModel():ViewModel() {
 
     fun getSearchPlayerResults(fifaVersion:Int, searchTerm:String) {
         viewModelScope.launch {
-                searchPlayersResult.value = apiClient.searchPlayerNames(fifaVersion, searchTerm)
-
+            try {
+                val results = apiClient.searchPlayerNames(fifaVersion, searchTerm)
+                searchPlayersResult.value =  results
+            }
+            catch (e:Exception){
+                searchPlayersResult.value = emptyList()
+            }
         }
     }
 
     fun initSelectedPlayer(data:SearchPlayerResponse){
         viewModelScope.launch {
             val result = PlayerDialogFragModel(data.id,data.playerName,data.playerImage,
-            data.playerRating,  EnumMap<Platform,Int>(Platform::class.java)
+            data.playerRating,  EnumMap<Platform,Int?>(Platform::class.java)
             )
-            result.currentPrice.put(Platform.PS,getPlayerCurrentPrice(data.id,Platform.PS))
-            result.currentPrice.put(Platform.XB, getPlayerCurrentPrice(data.id,Platform.XB))
+            result.currentPrice[Platform.PS] = getPlayerCurrentPrice(data.id,Platform.PS)
+            result.currentPrice[Platform.XB] = getPlayerCurrentPrice(data.id,Platform.XB)
             selectedPlayer.value = Event(result)
         }
 
     }
 
-    private suspend fun getPlayerCurrentPrice(playerId:Int, platform: Platform):Int{
-        val similarPlayers = apiClient.getCurrentPriceFor(playerId,platform).data
+    private suspend fun getPlayerCurrentPrice(playerId:Int, platform: Platform):Int?{
+        var similarPlayers:List<PlayerPriceResponse>
+        try{
+            similarPlayers = apiClient.getCurrentPriceFor(playerId,platform).data
+        }
+        catch (e:Exception){
+            similarPlayers = emptyList()
+        }
         return similarPlayers.find {
-            it.id == playerId
-        }!!.price
+                it.id == playerId
+            }?.price
+
     }
 
     fun insert(players: List<PlayerDBModel>){
         viewModelScope.launch {
             kotlin.runCatching {
                 playerDAO.insert(players)
-            }
-        }
-    }
-
-
-    fun deleteAllTrackedPlayersInDb() {
-        viewModelScope.launch {
-            kotlin.runCatching {
-                playerDAO.deleteAll()
             }
         }
     }
