@@ -1,17 +1,13 @@
 package com.example.futbinwatchernew.UI
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.futbinwatchernew.*
-import com.example.futbinwatchernew.DI.DaggerApplicationComponent
-import com.example.futbinwatchernew.DI.DatabaseModule
-import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerFrameLayout
+import com.example.futbinwatchernew.Services.UploadTrackedPlayersService
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +60,8 @@ class MainActivity : AppCompatActivity() {
             }
             vm.insert(vm.allTrackedPlayers)
         }
+        startService(Intent(applicationContext,
+            UploadTrackedPlayersService::class.java))
         return super.onStop()
     }
 

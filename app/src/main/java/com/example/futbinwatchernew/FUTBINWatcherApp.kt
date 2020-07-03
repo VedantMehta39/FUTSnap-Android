@@ -10,6 +10,7 @@ class FUTBINWatcherApp:Application() {
     companion object{
         const val SEARCH_BASE_URL = "https://www.futbin.com"
         const val PRICE_BASE_URL = "https://futbin.org/futbin/api/fetchPlayerInformation/"
+        const val SERVICE_BASE_URL = "http://localhost:4000/api/"
         var component = HashMap<String,ApplicationComponent>()
         private set
         lateinit var instance:FUTBINWatcherApp
@@ -23,9 +24,15 @@ class FUTBINWatcherApp:Application() {
     }
 
     fun initDagger() {
-        component.put("SEARCH", DaggerApplicationComponent.builder().
-            databaseModule(DatabaseModule(this)).networkModule(NetworkModule(SEARCH_BASE_URL)).build())
-        component.put("PRICE", DaggerApplicationComponent.builder().
-            databaseModule(DatabaseModule(this)).networkModule(NetworkModule(PRICE_BASE_URL)).build())
+        component["SEARCH"] =
+            DaggerApplicationComponent.builder().databaseModule(DatabaseModule(this))
+                .networkModule(NetworkModule(SEARCH_BASE_URL)).build()
+        component["PRICE"] =
+            DaggerApplicationComponent.builder().databaseModule(DatabaseModule(this))
+                .networkModule(NetworkModule(PRICE_BASE_URL)).build()
+        component["SERVICE"] =
+            DaggerApplicationComponent.builder().databaseModule(DatabaseModule(this))
+                .networkModule(NetworkModule(SERVICE_BASE_URL)).build()
+
     }
 }
