@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.futbinwatchernew.*
-import com.example.futbinwatchernew.Database.PlayerDBModel
-import com.example.futbinwatchernew.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -69,6 +68,10 @@ class SearchedPlayersFragment:Fragment() {
             shimmer.visibility = View.GONE
             adapter.data = it
             adapter.notifyDataSetChanged()
+            if(it.isEmpty()){
+                val toast = Toast.makeText(requireContext(),"No players found",Toast.LENGTH_SHORT)
+                toast.show()
+            }
         })
 
         searchButton.setOnClickListener{
