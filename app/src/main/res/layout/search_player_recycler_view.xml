@@ -7,38 +7,41 @@
 
     <com.example.futbinwatchernew.UI.ValidatedEditText
         android:id="@+id/searchBar"
-        android:layout_width="329dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         android:ems="10"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.024"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/linear_layout_recycler_view"
+        app:layout_constraintHorizontal_weight="0.8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/enter"
+        app:layout_constraintTop_toTopOf="parent"
+         />
 
     <ImageButton
         android:id="@+id/enter"
-        android:layout_width="61dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginTop="12dp"
         android:background="@android:color/transparent"
         android:src="@android:drawable/ic_menu_search"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.157"
-        app:layout_constraintStart_toEndOf="@+id/searchBar"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintBottom_toTopOf="@id/linear_layout_recycler_view"
+        app:layout_constraintLeft_toRightOf="@id/searchBar"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:layout_width="409dp"
+        android:id="@+id/linear_layout_recycler_view"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="1dp"
         android:orientation="vertical"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintVertical_weight="0.92"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchBar"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        >
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/search_shimmer"
