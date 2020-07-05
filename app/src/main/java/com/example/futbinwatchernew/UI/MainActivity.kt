@@ -60,9 +60,15 @@ class MainActivity : AppCompatActivity() {
             }
             vm.insert(vm.allTrackedPlayers)
         }
-        startService(Intent(applicationContext,
-            UploadTrackedPlayersService::class.java))
         return super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(isFinishing){
+            startService(Intent(applicationContext,
+                UploadTrackedPlayersService::class.java))
+        }
     }
 
 
