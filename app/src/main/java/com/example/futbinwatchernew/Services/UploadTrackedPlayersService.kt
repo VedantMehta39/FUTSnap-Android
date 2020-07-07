@@ -1,5 +1,6 @@
 package com.example.futbinwatchernew.Services
 
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
@@ -8,8 +9,6 @@ import com.example.futbinwatchernew.Database.PlayerDAO
 import com.example.futbinwatchernew.Database.PlayerDBModel
 import com.example.futbinwatchernew.FUTBINWatcherApp
 import com.example.futbinwatchernew.Network.ApiClient
-import com.example.futbinwatchernew.Services.Models.Client
-import com.example.futbinwatchernew.Services.Models.Player
 import com.example.futbinwatchernew.Services.Models.PlayerTrackingRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,11 +38,13 @@ class UploadTrackedPlayersService:LifecycleService() {
     }
 
     private fun insertIntoRemoteDatabase(players:List<PlayerDBModel>){
+        val sharedPref = getSharedPreferences("FirebaseToken", Context.MODE_PRIVATE)
+        val clientId = sharedPref.getInt("CLIENT_ID", -1)
         val uploadPlayers = players.map {
-            PlayerTrackingRequest(it.id, it.platform!!.ordinal,it.gte,it.lt,"1",it.targetPrice,
+            PlayerTrackingRequest(it.id, it.platform!!.ordinal,it.gte,it.lt,clientId,it.targetPrice,
                 null, null) }.toList()
         CoroutineScope(Dispatchers.IO).launch {
-            apiClient.postTrackedPlayersCondition("1",uploadPlayers)
+            apiClient.putTrackedPlayersCondition("1",uploadPlayers)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.futbinwatchernew.DI
 
 import com.example.futbinwatchernew.SearchPlayerViewModel
+import com.example.futbinwatchernew.Services.RegisterClientService
 import com.example.futbinwatchernew.Services.UploadTrackedPlayersService
 import dagger.Component
 
@@ -8,4 +9,5 @@ import dagger.Component
 interface ApplicationComponent {
     fun inject(vmodel:SearchPlayerViewModel)
     fun inject(service: UploadTrackedPlayersService)
+    fun inject(service:RegisterClientService)
 }
