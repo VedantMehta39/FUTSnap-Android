@@ -3,6 +3,7 @@ package com.example.futbinwatchernew.Network
 import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceWrapperResponse
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
+import com.example.futbinwatchernew.Services.Models.Client
 import com.example.futbinwatchernew.Services.Models.PlayerTrackingRequest
 import retrofit2.http.*
 
@@ -13,6 +14,12 @@ interface ApiClient {
     @GET("?platform=PS")
     suspend fun getCurrentPriceFor(@Query("ID")playerId:Int,@Query("platform")platform:Platform):PlayerPriceWrapperResponse
 
+
+    @POST("Clients/")
+    suspend fun postClient(@Body client: Client):Int
+
+    @PUT("Clients/{clientId}")
+    suspend fun putClient(@Path("clientId") clientId: Int, @Body client: Client)
 
     @POST("PlayerTrackingRequests/{clientId}")
     suspend fun postPlayerTrackingRequests(@Path("clientId") clientId:Int,@Body trackingRequests:List<PlayerTrackingRequest>)
