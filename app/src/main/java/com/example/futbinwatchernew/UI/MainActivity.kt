@@ -54,22 +54,24 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         val vm = ViewModelProvider(this).get(SearchPlayerViewModel::class.java)
         if(vm.isTrackedPlayersInDBInitialized()){
-            while (vm.deletedPlayersStack.isNotEmpty()){
-                val deletedItem = vm.deletedPlayersStack.pop()
-                vm.deletePlayer(deletedItem)
+            vm.deletedTrackedPlayers.forEach {
+                vm.deletePlayer(it)
             }
             vm.insert(vm.allTrackedPlayers)
+        }
+        if(isFinishing){
+            val postData = vm.allTrackedPlayers.filter { it.id == 0 } as ArrayList
+            val putData = vm.allTrackedPlayers.filter { it.isEdited } as ArrayList
+            val deleteData = vm.deletedTrackedPlayers
+            val intent = Intent(applicationContext, UploadTrackedPlayersService::class.java)
+                .putParcelableArrayListExtra("POST_DATA",postData)
+                .putParcelableArrayListExtra("PUT_DATA",putData)
+                .putParcelableArrayListExtra("DELETE_DATA",deleteData)
+            startService(intent)
         }
         return super.onStop()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if(isFinishing){
-            startService(Intent(applicationContext,
-                UploadTrackedPlayersService::class.java))
-        }
-    }
 
 
 }

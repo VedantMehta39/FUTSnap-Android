@@ -1,5 +1,6 @@
 package com.example.futbinwatchernew.Network
 
+import androidx.room.Delete
 import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceWrapperResponse
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
@@ -14,6 +15,12 @@ interface ApiClient {
     suspend fun getCurrentPriceFor(@Query("ID")playerId:Int,@Query("platform")platform:Platform):PlayerPriceWrapperResponse
 
 
+    @POST("PlayerTrackingRequests/{clientId}")
+    suspend fun postPlayerTrackingRequests(@Path("clientId") clientId:Int,@Body trackingRequests:List<PlayerTrackingRequest>)
+
     @PUT("PlayerTrackingRequests/{clientId}")
-    suspend fun postTrackedPlayersCondition(@Path("clientId") clientId:String,@Body playersCondition:List<PlayerTrackingRequest>)
+    suspend fun putPlayerTrackingRequests(@Path("clientId") clientId:Int, @Body trackingRequests:List<PlayerTrackingRequest>)
+
+    @DELETE("PlayerTrackingRequests/{playerId}/{clientId}")
+    suspend fun deletePlayerTrackingRequests(@Path("playerId") playerId:Int, @Path("clientId") clientId:Int)
 }

@@ -26,7 +26,7 @@ class SearchPlayerViewModel():ViewModel() {
     @Inject lateinit var apiClient:ApiClient
     var allTrackedPlayers = ArrayList<PlayerDBModel>()
     lateinit var trackedPlayersInDb : LiveData<List<PlayerDBModel>>
-    var deletedPlayersStack = Stack<PlayerDBModel>()
+    var deletedTrackedPlayers = ArrayList<PlayerDBModel>()
     @Inject
     lateinit var playerDAO: PlayerDAO
 

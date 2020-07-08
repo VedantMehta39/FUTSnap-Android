@@ -14,8 +14,6 @@ import com.example.futbinwatchernew.Database.PlayerDBModel
 import com.example.futbinwatchernew.FUTBINWatcherApp
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.SearchPlayerViewModel
-import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerFrameLayout
 
 class TrackedPlayersFragment: Fragment() {
 
@@ -48,14 +46,14 @@ class TrackedPlayersFragment: Fragment() {
                 vm.allTrackedPlayers = vm.allTrackedPlayers.union(it).toMutableList() as ArrayList<PlayerDBModel>
                 adapter = TrackedPlayersRecyclerViewAdapter(vm.allTrackedPlayers)
                 recyclerView.adapter = adapter
-                val itemTouchHelper = ItemTouchHelper(SwipeToDeleteTrackedPlayerCallback(adapter,recyclerView, vm.deletedPlayersStack))
+                val itemTouchHelper = ItemTouchHelper(SwipeToDeleteTrackedPlayerCallback(adapter,recyclerView, vm.deletedTrackedPlayers))
                 itemTouchHelper.attachToRecyclerView(recyclerView)
             })
         }
         else{
             adapter = TrackedPlayersRecyclerViewAdapter(vm.allTrackedPlayers)
             recyclerView.adapter = adapter
-            val itemTouchHelper = ItemTouchHelper(SwipeToDeleteTrackedPlayerCallback(adapter,recyclerView, vm.deletedPlayersStack))
+            val itemTouchHelper = ItemTouchHelper(SwipeToDeleteTrackedPlayerCallback(adapter,recyclerView, vm.deletedTrackedPlayers))
             itemTouchHelper.attachToRecyclerView(recyclerView)
         }
 
