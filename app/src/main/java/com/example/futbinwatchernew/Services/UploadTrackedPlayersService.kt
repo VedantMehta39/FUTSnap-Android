@@ -31,7 +31,7 @@ class UploadTrackedPlayersService:LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val clientId = sharedPref.getInt("CLIENT_ID", 2)
+        val clientId = sharedPref.getInt("CLIENT_ID", -1)
 
         val postData = intent!!.getParcelableArrayListExtra<PlayerDBModel>("POST_DATA")!!
         val putData = intent.getParcelableArrayListExtra<PlayerDBModel>("PUT_DATA")!!
