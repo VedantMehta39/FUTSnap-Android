@@ -2,6 +2,7 @@ package com.example.futbinwatchernew.Services
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.lifecycle.LifecycleService
 
 import com.example.futbinwatchernew.Database.PlayerDAO
@@ -21,10 +22,11 @@ class UploadTrackedPlayersService:LifecycleService() {
     lateinit var playerDao:PlayerDAO
     @Inject
     lateinit var apiClient:ApiClient
-    val sharedPref = getSharedPreferences("FirebaseToken", Context.MODE_PRIVATE)
+    lateinit var sharedPref:SharedPreferences
 
     override fun onCreate() {
         FUTBINWatcherApp.component["SERVICE"]!!.inject(this)
+        sharedPref= getSharedPreferences("FirebaseToken", Context.MODE_PRIVATE)
         super.onCreate()
     }
 

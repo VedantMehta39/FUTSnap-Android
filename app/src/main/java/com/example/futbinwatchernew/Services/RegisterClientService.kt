@@ -23,10 +23,6 @@ class RegisterClientService:FirebaseMessagingService() {
         FUTBINWatcherApp.component["SERVICE"]!!.inject(this)
     }
 
-    override fun onMessageReceived(p0: RemoteMessage) {
-        super.onMessageReceived(p0)
-    }
-
 
     override fun onNewToken(newToken: String) {
         super.onNewToken(newToken)
