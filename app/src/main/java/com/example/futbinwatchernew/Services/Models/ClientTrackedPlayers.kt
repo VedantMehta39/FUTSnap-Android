@@ -1,8 +1,8 @@
 package com.example.futbinwatchernew.Services.Models
 
-data class Client(val Id: Int, val ClientToken:String)
+data class Client(val Id:Int,val ClientToken: String)
 
-data class Player(val PlayerId:Int)
+data class Player(val PlayerId:Int, val PlayerCardName:String)
 
 
 data class PlayerTrackingRequest(val PlayerId:Int, val Platform: Int, val Gte:Boolean,

@@ -81,7 +81,7 @@ class SinglePlayerDialog:DialogFragment() {
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {_ ->
                         if (targetPrice.isValid and gte_lt_toggle.checkedButtonIds.isNotEmpty()) {
                             val notifiedPlayer = PlayerDBModel()
-                            notifiedPlayer.id = it.id
+                            notifiedPlayer.futbinId = it.id
                             notifiedPlayer.name = it.name
                             notifiedPlayer.imageURL = it.imageURL
                             notifiedPlayer.rating = it.rating

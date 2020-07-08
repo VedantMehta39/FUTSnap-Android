@@ -3,7 +3,6 @@ package com.example.futbinwatchernew.Network
 import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceWrapperResponse
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
-import com.example.futbinwatchernew.Services.Models.Client
 import com.example.futbinwatchernew.Services.Models.PlayerTrackingRequest
 import retrofit2.http.*
 
@@ -15,12 +14,12 @@ interface ApiClient {
     suspend fun getCurrentPriceFor(@Query("ID")playerId:Int,@Query("platform")platform:Platform):PlayerPriceWrapperResponse
 
 
+    @POST("PlayerTrackingRequests/{clientId}")
+    suspend fun postPlayerTrackingRequests(@Path("clientId") clientId:Int,@Body trackingRequests:List<PlayerTrackingRequest>)
+
     @PUT("PlayerTrackingRequests/{clientId}")
-    suspend fun putTrackedPlayersCondition(@Path("clientId") clientId:String, @Body playersCondition:List<PlayerTrackingRequest>)
+    suspend fun putPlayerTrackingRequests(@Path("clientId") clientId:Int, @Body trackingRequests:List<PlayerTrackingRequest>)
 
-    @POST("Clients/")
-    suspend fun postClient(@Body client: Client):Int
-
-    @PUT("Clients/{id}")
-    suspend fun putClient(@Path("id") Id:Int, @Body newClient:Client)
+    @DELETE("PlayerTrackingRequests/{playerId}/{clientId}")
+    suspend fun deletePlayerTrackingRequests(@Path("playerId") playerId:Int, @Path("clientId") clientId:Int)
 }

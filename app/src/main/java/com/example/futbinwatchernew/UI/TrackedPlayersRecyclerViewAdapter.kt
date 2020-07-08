@@ -60,6 +60,7 @@ class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerDBModel>):RecyclerV
                 TrackedPriceListener {
                 override fun onPriceChanged(newPrice: String) {
                     data.targetPrice = Util.getNumberFromLocaleFormattedString(newPrice)
+                    data.isEdited = true
                 }
             })
             Picasso.get().load(data.imageURL).into(playerImageView)
