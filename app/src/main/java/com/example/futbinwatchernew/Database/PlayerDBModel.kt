@@ -46,7 +46,7 @@ data class PlayerDBModel(@PrimaryKey(autoGenerate = true) var id:Int, var futbin
         parcel.writeInt(if(lt) 1 else 0)
     }
     override fun describeContents(): Int {
-        TODO("Not yet implemented")
+        return -1
     }
 
     companion object CREATOR : Parcelable.Creator<PlayerDBModel> {
