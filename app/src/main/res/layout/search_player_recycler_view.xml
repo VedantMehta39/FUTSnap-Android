@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     >
 
-    <com.example.futbinwatchernew.UI.ValidatedEditText
+    <EditText
         android:id="@+id/searchBar"
         android:layout_width="0dp"
         android:layout_height="60dp"

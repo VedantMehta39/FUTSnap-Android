@@ -59,7 +59,7 @@
                 app:layout_constraintRight_toLeftOf="@+id/gte_lt_toggle"
                 app:layout_constraintTop_toBottomOf="@+id/tv_player_name">
 
-                <com.example.futbinwatchernew.UI.ValidatedEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_target_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

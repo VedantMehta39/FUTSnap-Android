@@ -57,7 +57,7 @@
         android:layout_margin="8dp"
         >
 
-        <com.example.futbinwatchernew.UI.ValidatedEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_target_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

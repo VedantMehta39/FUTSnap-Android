@@ -1,9 +1,12 @@
 package com.example.futbinwatchernew.UI
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -13,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.futbinwatchernew.*
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
+import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
+import com.example.futbinwatchernew.UI.Validators.Validator
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
 
@@ -30,19 +35,24 @@ class SearchedPlayersFragment:Fragment() {
         val vm = ViewModelProvider(requireActivity()).get(SearchPlayerViewModel::class.java)
         super.onViewCreated(view, savedInstanceState)
         val searchButton = view.findViewById<ImageButton>(R.id.enter)
-        val searchField = view.findViewById<ValidatedEditText>(R.id.searchBar)
+        val searchField = view.findViewById<EditText>(R.id.searchBar)
         val shimmer = requireActivity().findViewById<ShimmerFrameLayout>(R.id.search_shimmer)
         shimmer.setShimmer(Shimmer.AlphaHighlightBuilder().setAutoStart(false).build())
-        searchField.setValidator(object :
-            Validator {
-            override var errorMessage: String = "Search Term must be of atleast 3 letters"
-                get() = field
+        searchField.addTextChangedListener(object:TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+            }
 
-            override fun validate(data: String): Boolean {
-                if (data.length< 3){
-                    return false
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(text: CharSequence?, start: Int, lengthBefore: Int,
+                                               lengthAfter: Int) {
+                text?.let {
+                    val validator = TextLengthValidator(3,null)
+                    if(!validator.validate(it.toString())){
+                        searchField.error = validator.errorMessage
+                    }
                 }
-                return true
             }
 
         })
@@ -75,7 +85,7 @@ class SearchedPlayersFragment:Fragment() {
         })
 
         searchButton.setOnClickListener{
-            FUTBINWatcherApp.component.get("SEARCH")!!.inject(vm)
+            FUTBINWatcherApp.component["SEARCH"]!!.inject(vm)
             shimmer.visibility = View.VISIBLE
             shimmer.startShimmer()
             vm.getSearchPlayerResults(20, searchField.text.toString())

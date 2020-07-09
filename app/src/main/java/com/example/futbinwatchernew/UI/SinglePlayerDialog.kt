@@ -3,6 +3,8 @@ package com.example.futbinwatchernew.UI
 import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.DialogFragment
@@ -12,16 +14,19 @@ import com.example.futbinwatchernew.Database.PlayerDBModel
 import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.SearchPlayerViewModel
+import com.example.futbinwatchernew.UI.Validators.TextContentValidator
+import com.example.futbinwatchernew.UI.Validators.Validator
 import com.example.futbinwatchernew.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
 
 class SinglePlayerDialog:DialogFragment() {
 
     lateinit var playerImageView:ImageView
     lateinit var currentPriceTextView:TextView
-    lateinit var targetPrice:ValidatedEditText
+    lateinit var targetPrice:TextInputEditText
     lateinit var playerNameTextView:TextView
     lateinit var psPlatformButton:Button
     lateinit var xboxPlatformButton:Button
@@ -79,7 +84,8 @@ class SinglePlayerDialog:DialogFragment() {
 
 
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {_ ->
-                        if (targetPrice.isValid and gte_lt_toggle.checkedButtonIds.isNotEmpty()) {
+                        val validator = TextContentValidator("-.")
+                        if (validator.validate(targetPrice.text.toString()) and gte_lt_toggle.checkedButtonIds.isNotEmpty()) {
                             val notifiedPlayer = PlayerDBModel()
                             notifiedPlayer.futbinId = it.id
                             notifiedPlayer.name = it.name
@@ -112,26 +118,21 @@ class SinglePlayerDialog:DialogFragment() {
         playerImageView = view.findViewById<ImageView>(R.id.img_player)
         currentPriceTextView = view.findViewById<TextView>(R.id.tv_current_price)
 
-        targetPrice = (view.findViewById<ValidatedEditText>(R.id.et_target_price))
-        targetPrice.setValidator( object :
-            Validator {
-            override var errorMessage: String = ""
-                get() = field
+        targetPrice = (view.findViewById<TextInputEditText>(R.id.et_target_price))
+        targetPrice.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+            }
 
-            override fun validate(data: String): Boolean {
-                if(data.isEmpty()){
-                    errorMessage = "Target Price cannot be empty"
-                    return false
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                text?.let {
+                    val validator = TextContentValidator("-.")
+                    if(!validator.validate(text.toString())){
+                        targetPrice.error = validator.errorMessage
+                    }
                 }
-                if(data.contains("-")){
-                    errorMessage = "Target Price cannot be negative"
-                    return false
-                }
-                if(data.contains(".")){
-                    errorMessage = "Target Price has to be a whole number"
-                    return false
-                }
-                return true
             }
 
         })
