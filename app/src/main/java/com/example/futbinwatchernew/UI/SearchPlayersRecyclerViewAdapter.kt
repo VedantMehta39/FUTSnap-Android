@@ -23,17 +23,17 @@ class SearchPlayersRecyclerViewAdapter(var data:List<SearchPlayerResponse>, var 
             playerNameTextView.text = data.playerName
             playerRatingTextView.text = data.playerRating.toString()
             Picasso.get().load(data.playerImage).into(playerImageView)
-
-            playerNameTextView.setOnClickListener {
-                itemSelectedListener.onSearchedPlayerSelected(data)
-            }
         }
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.search_player_view,parent,false)
-        return MyViewHolder(view)
+        val holder =  MyViewHolder(view)
+        holder.playerNameTextView.setOnClickListener {
+            itemSelectedListener.onSearchedPlayerSelected(data[holder.adapterPosition])
+        }
+        return holder
     }
 
     override fun getItemCount(): Int {

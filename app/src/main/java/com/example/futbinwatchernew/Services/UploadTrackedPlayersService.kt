@@ -37,9 +37,16 @@ class UploadTrackedPlayersService:LifecycleService() {
         val putData = intent.getParcelableArrayListExtra<PlayerDBModel>("PUT_DATA")!!
         val deleteData = intent.getParcelableArrayListExtra<PlayerDBModel>("DELETE_DATA")!!
 
-        createPlayerTrackingRequests(postData, clientId)
-        editPlayerTrackingRequests(putData,clientId)
-        deletePlayerTrackingRequests(deleteData,clientId)
+        if(postData.isNotEmpty()){
+            createPlayerTrackingRequests(postData, clientId)
+        }
+        if(putData.isNotEmpty()){
+            editPlayerTrackingRequests(putData,clientId)
+        }
+        if(deleteData.isNotEmpty()){
+            deletePlayerTrackingRequests(deleteData,clientId)
+
+        }
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -47,10 +54,10 @@ class UploadTrackedPlayersService:LifecycleService() {
 
         val uploadRequests = players.map {
             PlayerTrackingRequest(it.futbinId, it.platform!!.ordinal,it.gte,it.lt,clientId,it.targetPrice,
-                null, Player(it.futbinId,it.name)) }.toList()
+                null, Player(it.futbinId,it.name + " " + it.rating.toString())) }.toList()
 
         CoroutineScope(Dispatchers.IO).launch {
-            apiClient.postPlayerTrackingRequests(clientId, uploadRequests)
+            apiClient.postPlayerTrackingRequests(uploadRequests)
         }
 
     }

@@ -19,20 +19,24 @@ class SwipeToDeleteTrackedPlayerCallback(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         val position = viewHolder.adapterPosition
 
         val deletedItem = adapter.data[position]
-        deletedPlayers.add(deletedItem)
+        if (deletedItem.id != 0){
+            deletedPlayers.add(deletedItem)
+        }
         (adapter.data as ArrayList).removeAt(position)
         adapter.notifyDataSetChanged()
         Snackbar.make(view, deletedItem.name+" Deleted", Snackbar.LENGTH_LONG)
             .setAction("Undo") { _ ->
                 (adapter.data as ArrayList).add(position, deletedItem)
-                deletedPlayers.remove(deletedItem)
+                if (deletedItem.id != 0){
+                    deletedPlayers.remove(deletedItem)
+                }
                 adapter.notifyDataSetChanged()
             }
             .show()

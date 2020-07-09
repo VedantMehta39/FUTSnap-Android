@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         }
         if(isFinishing){
             val postData = vm.allTrackedPlayers.filter { it.id == 0 } as ArrayList
-            val putData = vm.allTrackedPlayers.filter { it.isEdited } as ArrayList
+            val putData = vm.allTrackedPlayers.filter { it.id!= 0 && it.isEdited } as ArrayList
             val deleteData = vm.deletedTrackedPlayers
             val intent = Intent(applicationContext, UploadTrackedPlayersService::class.java)
                 .putParcelableArrayListExtra("POST_DATA",postData)
