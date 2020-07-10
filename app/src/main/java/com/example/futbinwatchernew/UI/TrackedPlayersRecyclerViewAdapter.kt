@@ -74,6 +74,28 @@ class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerDBModel>):RecyclerV
             }
 
         })
+        holder.gte_lt_toggle.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked){
+                when(checkedId){
+                    R.id.gte_target -> {
+                        if(data[holder.adapterPosition].gte != true){
+                            data[holder.adapterPosition].isEdited = true
+                            data[holder.adapterPosition].gte = true
+                            data[holder.adapterPosition].lt = false
+                        }
+                    }
+                    R.id.lt_target -> {
+                        if(data[holder.adapterPosition].lt != true){
+                            data[holder.adapterPosition].isEdited = true
+                            data[holder.adapterPosition].lt = true
+                            data[holder.adapterPosition].gte = false
+                        }
+
+                    }
+
+                }
+            }
+        }
         return holder
 
     }
