@@ -77,6 +77,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
+                app:selectionRequired="true"
+                app:singleSelection="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_weight="0.1"
                 app:layout_constraintLeft_toRightOf="@+id/parent_layout_target_price"

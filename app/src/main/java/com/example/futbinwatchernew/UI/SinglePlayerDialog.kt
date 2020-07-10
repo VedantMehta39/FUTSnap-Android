@@ -15,6 +15,7 @@ import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.SearchPlayerViewModel
 import com.example.futbinwatchernew.UI.Validators.TextContentValidator
+import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
 import com.example.futbinwatchernew.UI.Validators.Validator
 import com.example.futbinwatchernew.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -78,14 +79,13 @@ class SinglePlayerDialog:DialogFragment() {
                     }
 
 
-                    platform_toggle.addOnButtonCheckedListener { group, checkedId, _ ->
-                        if (group.checkedButtonId == -1) group.check(checkedId)
-                    }
 
 
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {_ ->
-                        val validator = TextContentValidator("-.")
-                        if (validator.validate(targetPrice.text.toString()) and gte_lt_toggle.checkedButtonIds.isNotEmpty()) {
+                        val contentValidator = TextContentValidator("-.")
+                        val lengthValidator = TextLengthValidator(1,null)
+                        if (lengthValidator.validate(targetPrice.text.toString()) and
+                            contentValidator.validate(targetPrice.text.toString())) {
                             val notifiedPlayer = PlayerDBModel()
                             notifiedPlayer.futbinId = it.id
                             notifiedPlayer.name = it.name
