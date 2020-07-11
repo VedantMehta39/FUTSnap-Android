@@ -12,8 +12,7 @@ import com.example.futbinwatchernew.Database.PlayerDBModel
 import com.example.futbinwatchernew.Models.Platform
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.UI.Validators.TextContentValidator
-import com.example.futbinwatchernew.UI.Validators.Validator
-import com.example.futbinwatchernew.Util
+import com.example.futbinwatchernew.Utils.StringFormatter
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
@@ -27,7 +26,7 @@ class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerDBModel>):RecyclerV
         val gte_lt_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.gte_lt_toggle)
         fun bindData(data: PlayerDBModel){
             playerNameTextView.text = (data.name + " " + data.rating)
-            playerTargetPriceView.setText(Util.getLocaleFormattedStringFromNumber(data.targetPrice))
+            playerTargetPriceView.setText(StringFormatter.getLocaleFormattedStringFromNumber(data.targetPrice))
             when(data.platform){
                 Platform.PS -> platformImageView.setImageResource(R.drawable.ic_icons8_playstation)
                 Platform.XB -> platformImageView.setImageResource(R.drawable.ic_icons8_xbox)
@@ -60,7 +59,7 @@ class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerDBModel>):RecyclerV
                         holder.playerTargetPriceView.error = validator.errorMessage
                     }
                     else{
-                        val newTargetPrice = Util.getNumberFromLocaleFormattedString(text.toString())
+                        val newTargetPrice = StringFormatter.getNumberFromLocaleFormattedString(text.toString())
                         if((start!=0 || before != 0) &&
                             (data[holder.adapterPosition].targetPrice != newTargetPrice)){
 

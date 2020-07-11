@@ -16,8 +16,7 @@ import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.SearchPlayerViewModel
 import com.example.futbinwatchernew.UI.Validators.TextContentValidator
 import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
-import com.example.futbinwatchernew.UI.Validators.Validator
-import com.example.futbinwatchernew.Util
+import com.example.futbinwatchernew.Utils.StringFormatter
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
@@ -68,14 +67,14 @@ class SinglePlayerDialog:DialogFragment() {
                 else{
                     showLoadingSpinner(false)
 
-                    currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(it.currentPrice.get(Platform.PS)!!)
+                    currentPriceTextView.text = StringFormatter.getLocaleFormattedStringFromNumber(it.currentPrice.get(Platform.PS)!!)
                     Picasso.get().load(it.imageURL).into(playerImageView)
                     playerNameTextView.text = (it.name + " " + it.rating.toString())
                     psPlatformButton.setOnClickListener {_ ->
-                        currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(it.currentPrice.get(Platform.PS)!!)
+                        currentPriceTextView.text = StringFormatter.getLocaleFormattedStringFromNumber(it.currentPrice.get(Platform.PS)!!)
                     }
                     xboxPlatformButton.setOnClickListener {_ ->
-                        currentPriceTextView.text = Util.getLocaleFormattedStringFromNumber(it.currentPrice.get(Platform.XB)!!)
+                        currentPriceTextView.text = StringFormatter.getLocaleFormattedStringFromNumber(it.currentPrice.get(Platform.XB)!!)
                     }
 
 

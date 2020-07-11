@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.futbinwatchernew.*
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
-import com.example.futbinwatchernew.UI.Validators.Validator
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
 

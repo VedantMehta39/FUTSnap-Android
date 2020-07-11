@@ -3,6 +3,7 @@ package com.example.futbinwatchernew.Services
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.widget.Toast
 import androidx.lifecycle.LifecycleService
 
 import com.example.futbinwatchernew.Database.PlayerDAO
@@ -11,6 +12,9 @@ import com.example.futbinwatchernew.FUTBINWatcherApp
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Services.Models.Player
 import com.example.futbinwatchernew.Services.Models.PlayerTrackingRequest
+import com.example.futbinwatchernew.Utils.SharedPrefFileNames
+import com.example.futbinwatchernew.Utils.SharedPrefRepo
+import com.example.futbinwatchernew.Utils.SharedPrefsTags
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,6 +35,14 @@ class UploadTrackedPlayersService:LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        var isClientSuccessfullyRegistered = false
+        val sharedPrefRepo = SharedPrefRepo(this, SharedPrefFileNames.CLIENT_REGISTRATION)
+        while (!isClientSuccessfullyRegistered){
+            if(sharedPrefRepo.readFromSharedPref(SharedPrefsTags.FIREBASE_TOKEN_KEY) != null &&
+                sharedPrefRepo.readFromSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC) == true){
+                isClientSuccessfullyRegistered = true
+            }
+        }
         val clientId = sharedPref.getInt("CLIENT_ID", -1)
 
         val postData = intent!!.getParcelableArrayListExtra<PlayerDBModel>("POST_DATA")!!
@@ -47,6 +59,7 @@ class UploadTrackedPlayersService:LifecycleService() {
             deletePlayerTrackingRequests(deleteData,clientId)
 
         }
+        stopSelf()
         return super.onStartCommand(intent, flags, startId)
     }
 
