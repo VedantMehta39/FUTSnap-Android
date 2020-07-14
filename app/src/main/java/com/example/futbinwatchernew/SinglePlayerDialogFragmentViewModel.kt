@@ -3,8 +3,8 @@ package com.example.futbinwatchernew
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.futbinwatchernew.Models.Platform
-import com.example.futbinwatchernew.Models.PlayerDialogFragModel
+import com.example.futbinwatchernew.UI.Models.Platform
+import com.example.futbinwatchernew.UI.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceResponse
 import com.example.futbinwatchernew.UI.Event

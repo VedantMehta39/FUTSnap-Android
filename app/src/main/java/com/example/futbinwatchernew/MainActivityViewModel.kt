@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.futbinwatchernew.Network.ApiClient
-import com.example.futbinwatchernew.Services.Models.PlayerTrackingRequest
+import com.example.futbinwatchernew.Network.ResponseModels.PlayerTrackingRequest
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
