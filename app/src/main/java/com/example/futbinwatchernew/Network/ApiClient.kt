@@ -1,10 +1,10 @@
 package com.example.futbinwatchernew.Network
 
-import com.example.futbinwatchernew.Models.Platform
+import com.example.futbinwatchernew.UI.Models.Platform
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceWrapperResponse
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
-import com.example.futbinwatchernew.Services.Models.Client
-import com.example.futbinwatchernew.Services.Models.PlayerTrackingRequest
+import com.example.futbinwatchernew.Network.ResponseModels.Client
+import com.example.futbinwatchernew.Network.ResponseModels.PlayerTrackingRequest
 import retrofit2.http.*
 
 interface ApiClient {
@@ -21,11 +21,14 @@ interface ApiClient {
     @PUT("Clients/{clientId}")
     suspend fun putClient(@Path("clientId") clientId: Int, @Body client: Client)
 
-    @POST("PlayerTrackingRequests/")
-    suspend fun postPlayerTrackingRequests(@Body trackingRequests:List<PlayerTrackingRequest>)
+    @GET("PlayerTrackingRequests/{clientId}")
+    suspend fun getPlayerTrackingRequests(@Path("clientId") clientId: Int):List<PlayerTrackingRequest>
 
-    @PUT("PlayerTrackingRequests/{clientId}")
-    suspend fun putPlayerTrackingRequests(@Path("clientId") clientId:Int, @Body trackingRequests:List<PlayerTrackingRequest>)
+    @POST("PlayerTrackingRequests/")
+    suspend fun postPlayerTrackingRequests(@Body trackingRequest: PlayerTrackingRequest)
+
+    @PUT("PlayerTrackingRequests/{playerId}/{clientId}")
+    suspend fun putPlayerTrackingRequests(@Path("playerId") playerId:Int,@Path("clientId") clientId:Int, @Body trackingRequest: PlayerTrackingRequest)
 
     @DELETE("PlayerTrackingRequests/{playerId}/{clientId}")
     suspend fun deletePlayerTrackingRequests(@Path("playerId") playerId:Int, @Path("clientId") clientId:Int)
