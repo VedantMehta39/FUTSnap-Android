@@ -78,7 +78,6 @@
             android:gravity="center"
             app:selectionRequired="true"
             app:singleSelection="true"
-            app:checkedButton="@+id/ps_button"
             >
             <Button
                 android:id="@+id/ps_button"
@@ -103,7 +102,6 @@
             android:gravity="center"
             app:selectionRequired="true"
             app:singleSelection="true"
-            app:checkedButton="@id/lt_target"
             >
             <Button
                 android:id="@+id/gte_target"
