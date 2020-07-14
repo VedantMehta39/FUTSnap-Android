@@ -11,6 +11,7 @@ import javax.inject.Inject
 
 class SearchPlayerViewModel():ViewModel() {
     var searchPlayersResult = MutableLiveData<List<SearchPlayerResponse>>()
+    var errorMessage = MutableLiveData<String>()
     @Inject lateinit var apiClient:ApiClient
 
     fun getSearchPlayerResults(fifaVersion:Int, searchTerm:String) {
@@ -20,7 +21,7 @@ class SearchPlayerViewModel():ViewModel() {
                 searchPlayersResult.value =  results
             }
             catch (e:Exception){
-                throw e
+                errorMessage.value = "Couldn't connect to FUTBIN Servers! Please try again later."
             }
         }
     }

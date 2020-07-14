@@ -7,6 +7,7 @@ import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerTrackingRequest
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.util.*
 import javax.inject.Inject
 
 class MainActivityViewModel: ViewModel() {
@@ -15,20 +16,19 @@ class MainActivityViewModel: ViewModel() {
     lateinit var apiClient: ApiClient
 
     var clientId:Int = 0
-
+    var errorMessage = MutableLiveData<String>()
 
     var allPlayerTrackingRequests = MutableLiveData<List<PlayerTrackingRequest>>()
-    var deletedTrackedPlayers = ArrayList<PlayerTrackingRequest>()
+    var deletedTrackedPlayers = Stack<PlayerTrackingRequest>()
 
 
     fun getPlayerTrackingRequests(){
         viewModelScope.launch {
             try{
-                val data = apiClient.getPlayerTrackingRequests(clientId)
-                allPlayerTrackingRequests.value = data
+                allPlayerTrackingRequests.value = apiClient.getPlayerTrackingRequests(clientId)
             }
             catch (e: Exception){
-                throw e
+                errorMessage.value = "Couldn't connect to service! Please try again later"
             }
         }
     }
@@ -38,7 +38,7 @@ class MainActivityViewModel: ViewModel() {
             try{
                 apiClient.postPlayerTrackingRequests(data)
                 if(allPlayerTrackingRequests.value != null){
-                    val currentData = (allPlayerTrackingRequests.value as MutableList)
+                    val currentData = allPlayerTrackingRequests.value?.toMutableList()!!
                     currentData.add(data)
                     allPlayerTrackingRequests.value = currentData
                 }
@@ -48,8 +48,7 @@ class MainActivityViewModel: ViewModel() {
 
             }
             catch (e:Exception){
-                allPlayerTrackingRequests.value = emptyList()
-                throw e
+                errorMessage.value = "Couldn't connect to service! Please try again later"
             }
         }
     }
@@ -59,7 +58,7 @@ class MainActivityViewModel: ViewModel() {
             try{
                 apiClient.putPlayerTrackingRequests(playerId, clientId, data)
                 if(allPlayerTrackingRequests.value != null){
-                    val currentData = (allPlayerTrackingRequests.value as MutableList)
+                    val currentData = allPlayerTrackingRequests.value?.toMutableList()!!
                     currentData.removeIf { req -> req.PlayerId == playerId}
                     currentData.add(data)
                     allPlayerTrackingRequests.value = currentData
@@ -69,8 +68,18 @@ class MainActivityViewModel: ViewModel() {
                 }
             }
             catch (e: Exception){
-                allPlayerTrackingRequests.value = emptyList()
-                throw e
+                errorMessage.value = "Couldn't connect to service! Please try again later"
+            }
+        }
+    }
+
+    fun deletePlayerTrackingRequest(playerId: Int, clientId:Int){
+        viewModelScope.launch {
+            try {
+                apiClient.deletePlayerTrackingRequests(playerId,clientId)
+            }
+            catch (e:Exception){
+                errorMessage.value = "Couldn't connect to service! Please try again later"
             }
         }
     }

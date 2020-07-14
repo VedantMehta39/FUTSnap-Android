@@ -1,8 +1,6 @@
 package com.example.futbinwatchernew
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.futbinwatchernew.UI.Models.Platform
 import com.example.futbinwatchernew.UI.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ApiClient
@@ -15,27 +13,28 @@ import javax.inject.Inject
 class SinglePlayerDialogFragmentViewModel:ViewModel() {
 
     @Inject lateinit var apiClient:ApiClient
-
+    var errorMessage = MutableLiveData<String>()
     var selectedPlayer = MutableLiveData<Event<PlayerDialogFragModel>>()
 
 
     fun initSelectedPlayer(data: PlayerDialogFragModel){
         viewModelScope.launch {
-            data.currentPrice[Platform.PS] = getPlayerCurrentPrice(data.id, Platform.PS)
-            data.currentPrice[Platform.XB] = getPlayerCurrentPrice(data.id, Platform.XB)
-            selectedPlayer.value = Event(data)
+            try {
+                data.currentPrice[Platform.PS] = getPlayerCurrentPrice(data.id, Platform.PS)
+                data.currentPrice[Platform.XB] = getPlayerCurrentPrice(data.id, Platform.XB)
+                selectedPlayer.value = Event(data)
+            }
+            catch (e:Exception){
+                errorMessage.value = "Couldn't connect to FUTBIN Servers! Please try again later."
+            }
+
         }
 
     }
 
     private suspend fun getPlayerCurrentPrice(playerId:Int, platform: Platform):Int?{
-        var similarPlayers:List<PlayerPriceResponse>
-        try{
-            similarPlayers = apiClient.getCurrentPriceFor(playerId,platform).data
-        }
-        catch (e: Exception){
-            similarPlayers = emptyList()
-        }
+        val similarPlayers:List<PlayerPriceResponse> =
+            apiClient.getCurrentPriceFor(playerId,platform).data
         return similarPlayers.find {
             it.id == playerId
         }?.price
