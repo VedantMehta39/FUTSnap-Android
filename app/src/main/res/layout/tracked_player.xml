@@ -6,17 +6,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:clickable="true"
         >
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="16dp">
+            android:layout_margin="16dp"
+            android:clickable="false"
+            android:focusable="false"
+            >
 
             <ImageView
                 android:id="@+id/img_player"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintHorizontal_weight="0.2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -30,6 +35,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintBottom_toTopOf="@id/parent_layout_target_price"
                 app:layout_constraintHorizontal_weight="0.4"
                 app:layout_constraintLeft_toRightOf="@+id/img_player"
@@ -40,6 +47,8 @@
                 android:id="@+id/platform_icon"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintBottom_toTopOf="@id/gte_lt_toggle"
                 app:layout_constraintHorizontal_weight="0.1"
                 app:layout_constraintLeft_toRightOf="@id/tv_player_name"
@@ -51,8 +60,10 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:hint="@string/target_price"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_weight="0.4"
                 app:layout_constraintLeft_toRightOf="@id/img_player"
@@ -63,6 +74,9 @@
                     android:id="@+id/et_target_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:enabled="false"
                     android:gravity="end"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
@@ -75,6 +89,8 @@
                 android:id="@+id/gte_lt_toggle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
                 android:gravity="center"
                 android:orientation="vertical"
                 app:selectionRequired="true"
@@ -90,6 +106,8 @@
                     style="@style/Widget.App.Button.OutlinedButton.IconOnly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
                     app:icon="@drawable/ic_arrow_drop_up_24px" />
 
                 <Button
@@ -97,6 +115,8 @@
                     style="@style/Widget.App.Button.OutlinedButton.IconOnly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
                     app:icon="@drawable/ic_arrow_drop_down_24px" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
