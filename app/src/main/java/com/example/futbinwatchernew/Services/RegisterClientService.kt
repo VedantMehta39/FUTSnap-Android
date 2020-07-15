@@ -1,9 +1,8 @@
 package com.example.futbinwatchernew.Services
 
-import android.content.SharedPreferences
 import com.example.futbinwatchernew.FUTBINWatcherApp
 import com.example.futbinwatchernew.Network.ApiClient
-import com.example.futbinwatchernew.Services.Models.Client
+import com.example.futbinwatchernew.Network.ResponseModels.Client
 import com.example.futbinwatchernew.Utils.SharedPrefFileNames
 import com.example.futbinwatchernew.Utils.SharedPrefRepo
 import com.example.futbinwatchernew.Utils.SharedPrefsTags
