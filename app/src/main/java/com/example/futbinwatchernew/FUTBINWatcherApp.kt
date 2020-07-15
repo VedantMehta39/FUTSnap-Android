@@ -3,7 +3,6 @@ package com.example.futbinwatchernew
 import android.app.Application
 import com.example.futbinwatchernew.DI.ApplicationComponent
 import com.example.futbinwatchernew.DI.DaggerApplicationComponent
-import com.example.futbinwatchernew.DI.DatabaseModule
 import com.example.futbinwatchernew.DI.NetworkModule
 
 class FUTBINWatcherApp:Application() {
@@ -25,13 +24,13 @@ class FUTBINWatcherApp:Application() {
 
     fun initDagger() {
         component["SEARCH"] =
-            DaggerApplicationComponent.builder().databaseModule(DatabaseModule(this))
+            DaggerApplicationComponent.builder()
                 .networkModule(NetworkModule(SEARCH_BASE_URL)).build()
         component["PRICE"] =
-            DaggerApplicationComponent.builder().databaseModule(DatabaseModule(this))
+            DaggerApplicationComponent.builder()
                 .networkModule(NetworkModule(PRICE_BASE_URL)).build()
         component["SERVICE"] =
-            DaggerApplicationComponent.builder().databaseModule(DatabaseModule(this))
+            DaggerApplicationComponent.builder()
                 .networkModule(NetworkModule(SERVICE_BASE_URL)).build()
 
     }
