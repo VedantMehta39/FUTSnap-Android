@@ -10,10 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.futbinwatchernew.Database.PlayerDBModel
-import com.example.futbinwatchernew.FUTBINWatcherApp
+import com.example.futbinwatchernew.MainActivityViewModel
+import com.example.futbinwatchernew.UI.Models.Platform
+import com.example.futbinwatchernew.UI.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.R
-import com.example.futbinwatchernew.SearchPlayerViewModel
+import com.example.futbinwatchernew.Network.ResponseModels.PlayerTrackingRequest
+import java.util.*
 
 class TrackedPlayersFragment: Fragment() {
 
@@ -35,25 +37,46 @@ class TrackedPlayersFragment: Fragment() {
     ): View = LayoutInflater.from(container!!.context).inflate(R.layout.tracked_players_recycler, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val vm = ViewModelProvider(requireActivity()).get(SearchPlayerViewModel::class.java)
-        FUTBINWatcherApp.component.get("SEARCH")!!.inject(vm)
+        val mainActivityVm = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
         val recyclerView =  view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         var adapter: TrackedPlayersRecyclerViewAdapter
-        if(!vm.trackedPlayersInDb.hasActiveObservers()){
-            vm.trackedPlayersInDb.observe(requireActivity(), Observer {
+        if(!mainActivityVm.allPlayerTrackingRequests.hasActiveObservers()){
+            mainActivityVm.allPlayerTrackingRequests.observe(requireActivity(), Observer {
 
-                vm.allTrackedPlayers = vm.allTrackedPlayers.union(it).toMutableList() as ArrayList<PlayerDBModel>
-                adapter = TrackedPlayersRecyclerViewAdapter(vm.allTrackedPlayers)
+                adapter = TrackedPlayersRecyclerViewAdapter(it,
+                object :SelectedPlayerListener<PlayerTrackingRequest>{
+                    override fun onSearchedPlayerSelected(player: PlayerTrackingRequest) {
+                        if (parentFragmentManager.findFragmentByTag("PLAYER_DIALOG_FRAG") == null){
+                            val data = PlayerDialogFragModel(player.PlayerId,player.Player!!.CardName,
+                                player.Player!!.ImageUrl, EnumMap<Platform,Int?>(Platform::class.java),
+                                player.TargetPrice, Platform.values()[player.Platform], player.Gte,
+                                player.Lt, true)
+                            SinglePlayerDialog.newInstance(data).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
+                        }
+                }
+                })
                 recyclerView.adapter = adapter
-                val itemTouchHelper = ItemTouchHelper(SwipeToDeleteTrackedPlayerCallback(adapter,recyclerView, vm.deletedTrackedPlayers))
+                val itemTouchHelper = ItemTouchHelper(SwipeToDeleteTrackedPlayerCallback(adapter,recyclerView, mainActivityVm.deletedTrackedPlayers))
                 itemTouchHelper.attachToRecyclerView(recyclerView)
             })
         }
         else{
-            adapter = TrackedPlayersRecyclerViewAdapter(vm.allTrackedPlayers)
+            adapter = TrackedPlayersRecyclerViewAdapter(mainActivityVm.allPlayerTrackingRequests.value!!,
+                object :SelectedPlayerListener<PlayerTrackingRequest>{
+                    override fun onSearchedPlayerSelected(player: PlayerTrackingRequest) {
+                        if (parentFragmentManager.findFragmentByTag("PLAYER_DIALOG_FRAG") == null){
+                            val data = PlayerDialogFragModel(player.PlayerId,player.Player!!.CardName,
+                                player.Player!!.ImageUrl, EnumMap<Platform,Int?>(Platform::class.java),
+                                player.TargetPrice, Platform.values()[player.Platform], player.Gte,
+                            player.Lt, true)
+                            SinglePlayerDialog.newInstance(data).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
+                        }
+                    }
+
+                })
             recyclerView.adapter = adapter
-            val itemTouchHelper = ItemTouchHelper(SwipeToDeleteTrackedPlayerCallback(adapter,recyclerView, vm.deletedTrackedPlayers))
+            val itemTouchHelper = ItemTouchHelper(SwipeToDeleteTrackedPlayerCallback(adapter,recyclerView, mainActivityVm.deletedTrackedPlayers))
             itemTouchHelper.attachToRecyclerView(recyclerView)
         }
 

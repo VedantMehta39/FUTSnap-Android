@@ -15,12 +15,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.futbinwatchernew.*
+import com.example.futbinwatchernew.UI.Models.Platform
+import com.example.futbinwatchernew.UI.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
+import java.util.*
 
 class SearchedPlayersFragment:Fragment() {
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,8 +37,15 @@ class SearchedPlayersFragment:Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val vm = ViewModelProvider(requireActivity()).get(SearchPlayerViewModel::class.java)
         super.onViewCreated(view, savedInstanceState)
+        val vm:SearchPlayerViewModel = ViewModelProvider(this).
+        get(SearchPlayerViewModel::class.java)
+        FUTBINWatcherApp.component["SEARCH"]!!.inject(vm)
+
+        vm.errorMessage.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(requireContext(),it!!,Toast.LENGTH_SHORT).show()
+        })
+
         val searchButton = view.findViewById<ImageButton>(R.id.enter)
         val searchField = view.findViewById<EditText>(R.id.searchBar)
         val shimmer = requireActivity().findViewById<ShimmerFrameLayout>(R.id.search_shimmer)
@@ -58,13 +71,15 @@ class SearchedPlayersFragment:Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         val adapter = SearchPlayersRecyclerViewAdapter(
             emptyList(),
-            parentFragmentManager,
-            object:SearchPlayerSelectedListener{
+             object:SelectedPlayerListener<SearchPlayerResponse>{
                 override fun onSearchedPlayerSelected(player: SearchPlayerResponse) {
-                    FUTBINWatcherApp.component["PRICE"]!!.inject(vm)
-                    vm.initSelectedPlayer(player)
                     if (parentFragmentManager.findFragmentByTag("PLAYER_DIALOG_FRAG") == null){
-                        SinglePlayerDialog.newInstance().show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
+                        val data = PlayerDialogFragModel(player.id,
+                            player.playerName+ " " +player.playerRating.toString(),
+                            player.playerImage,
+                            EnumMap<Platform,Int?>(Platform::class.java),
+                            null,Platform.PS, gte = false, lt = true, isEdited = false)
+                        SinglePlayerDialog.newInstance(data).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
                     }
                 }
 
@@ -84,7 +99,6 @@ class SearchedPlayersFragment:Fragment() {
         })
 
         searchButton.setOnClickListener{
-            FUTBINWatcherApp.component["SEARCH"]!!.inject(vm)
             shimmer.visibility = View.VISIBLE
             shimmer.startShimmer()
             vm.getSearchPlayerResults(20, searchField.text.toString())
