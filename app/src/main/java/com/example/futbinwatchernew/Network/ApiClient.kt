@@ -25,7 +25,7 @@ interface ApiClient {
     suspend fun getPlayerTrackingRequests(@Path("clientId") clientId: Int):List<PlayerTrackingRequest>
 
     @POST("PlayerTrackingRequests/")
-    suspend fun postPlayerTrackingRequests(@Body trackingRequest: PlayerTrackingRequest)
+    suspend fun postPlayerTrackingRequests(@Body trackingRequest: PlayerTrackingRequest):PlayerTrackingRequest
 
     @PUT("PlayerTrackingRequests/{playerId}/{clientId}")
     suspend fun putPlayerTrackingRequests(@Path("playerId") playerId:Int,@Path("clientId") clientId:Int, @Body trackingRequest: PlayerTrackingRequest)
