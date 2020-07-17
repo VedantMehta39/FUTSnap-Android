@@ -19,6 +19,10 @@ import com.example.futbinwatchernew.UI.Models.Platform
 import com.example.futbinwatchernew.UI.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
+import com.example.futbinwatchernew.Utils.Error
+import com.example.futbinwatchernew.Utils.SharedPrefFileNames
+import com.example.futbinwatchernew.Utils.SharedPrefRepo
+import com.example.futbinwatchernew.Utils.SharedPrefsTags
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
 import java.util.*
@@ -42,14 +46,42 @@ class SearchedPlayersFragment:Fragment() {
         get(SearchPlayerViewModel::class.java)
         FUTBINWatcherApp.component["SEARCH"]!!.inject(vm)
 
-        vm.errorMessage.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(requireContext(),it!!,Toast.LENGTH_SHORT).show()
-        })
-
         val searchButton = view.findViewById<ImageButton>(R.id.enter)
         val searchField = view.findViewById<EditText>(R.id.searchBar)
         val shimmer = requireActivity().findViewById<ShimmerFrameLayout>(R.id.search_shimmer)
         shimmer.setShimmer(Shimmer.AlphaHighlightBuilder().setAutoStart(false).build())
+
+        vm.error.observe(viewLifecycleOwner, Observer {error ->
+            shimmer.stopShimmer()
+            shimmer.visibility = View.GONE
+            when(error){
+                is Error.GeneralError -> {
+                    Toast.makeText(requireContext(), error.message,Toast.LENGTH_LONG).show()
+                }
+                is Error.RegistrationError ->{
+                    val sharedPrefRepo = SharedPrefRepo(requireActivity(),
+                        SharedPrefFileNames.CLIENT_REGISTRATION)
+                    sharedPrefRepo.writeToSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC, false)
+                    parentFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragment_container_view_tag,
+                            ErrorFragment(error, null), "ERROR_FRAG"
+                        ).commit()
+                }
+                is Error.ServerError ->{
+                    parentFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragment_container_view_tag,
+                            ErrorFragment(error,null), "ERROR_FRAG"
+                        ).commit()
+                }
+
+            }
+
+
+
+        })
+
         searchField.addTextChangedListener(object:TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
             }
@@ -79,7 +111,7 @@ class SearchedPlayersFragment:Fragment() {
                             player.playerImage,
                             EnumMap<Platform,Int?>(Platform::class.java),
                             null,Platform.PS, gte = false, lt = true, isEdited = false)
-                        SinglePlayerDialog.newInstance(data).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
+                        SinglePlayerDialog(data).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
                     }
                 }
 

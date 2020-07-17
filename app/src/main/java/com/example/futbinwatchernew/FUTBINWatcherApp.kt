@@ -14,6 +14,7 @@ class FUTBINWatcherApp:Application() {
         private set
         lateinit var instance:FUTBINWatcherApp
         private set
+        val maxNofOfTrackingRequests = 5
 
     }
     override fun onCreate() {

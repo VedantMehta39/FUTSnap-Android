@@ -52,7 +52,7 @@ class TrackedPlayersFragment: Fragment() {
                                 player.Player!!.ImageUrl, EnumMap<Platform,Int?>(Platform::class.java),
                                 player.TargetPrice, Platform.values()[player.Platform], player.Gte,
                                 player.Lt, true)
-                            SinglePlayerDialog.newInstance(data).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
+                            SinglePlayerDialog(data).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
                         }
                 }
                 })
@@ -70,7 +70,7 @@ class TrackedPlayersFragment: Fragment() {
                                 player.Player!!.ImageUrl, EnumMap<Platform,Int?>(Platform::class.java),
                                 player.TargetPrice, Platform.values()[player.Platform], player.Gte,
                             player.Lt, true)
-                            SinglePlayerDialog.newInstance(data).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
+                            SinglePlayerDialog(data).show(parentFragmentManager,"PLAYER_DIALOG_FRAG")
                         }
                     }
 

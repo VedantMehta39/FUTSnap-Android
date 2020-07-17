@@ -17,16 +17,15 @@ import com.example.futbinwatchernew.Network.ResponseModels.Player
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerTrackingRequest
 import com.example.futbinwatchernew.UI.Validators.TextContentValidator
 import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
-import com.example.futbinwatchernew.Utils.StringFormatter
+import com.example.futbinwatchernew.Utils.*
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
 
 
-class SinglePlayerDialog:DialogFragment() {
+class SinglePlayerDialog(val data:PlayerDialogFragModel):DialogFragment() {
 
-    lateinit var data:PlayerDialogFragModel
     lateinit var playerImageView:ImageView
     lateinit var currentPriceTextView:TextView
     lateinit var targetPrice:TextInputEditText
@@ -36,19 +35,6 @@ class SinglePlayerDialog:DialogFragment() {
     lateinit var platform_toggle:MaterialButtonToggleGroup
     lateinit var gte_lt_toggle:MaterialButtonToggleGroup
     lateinit var progressBar:ProgressBar
-    companion object{
-
-        var instance:SinglePlayerDialog? = null
-
-        fun newInstance(data:PlayerDialogFragModel):SinglePlayerDialog {
-            if (instance == null){
-                instance = SinglePlayerDialog()
-            }
-            instance!!.data = data
-            return instance!!
-        }
-
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.single_player_dialog, null)
@@ -59,8 +45,35 @@ class SinglePlayerDialog:DialogFragment() {
         FUTBINWatcherApp.component["PRICE"]!!.inject(vm)
         vm.initSelectedPlayer(data)
 
-        vm.errorMessage.observe(this, Observer {
-            Toast.makeText(requireContext(),it!!,Toast.LENGTH_SHORT).show()
+        vm.error.observe(this, Observer {error ->
+
+            when(error){
+                is Error.GeneralError -> {
+                    Toast.makeText(requireContext(), error.message,Toast.LENGTH_LONG).show()
+                    dismiss()
+                }
+                is Error.RegistrationError ->{
+                    val sharedPrefRepo = SharedPrefRepo(requireActivity(),
+                        SharedPrefFileNames.CLIENT_REGISTRATION)
+                    sharedPrefRepo.writeToSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC, false)
+                    parentFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragment_container_view_tag,
+                            ErrorFragment(error,null), "ERROR_FRAG"
+                        ).commit()
+                }
+                is Error.ServerError ->{
+                    parentFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragment_container_view_tag,
+                            ErrorFragment(error,null), "ERROR_FRAG"
+                        ).commit()
+                }
+
+            }
+
+
+
         })
 
         initViews(view)
@@ -68,13 +81,6 @@ class SinglePlayerDialog:DialogFragment() {
 
         vm.selectedPlayer.observe(this, Observer{ event ->
             event.getContentIfNotHandled()?.let {
-                if(it.currentPrice[Platform.PS] == null || it.currentPrice[Platform.XB] == null){
-                    val toast = Toast.makeText(requireContext(),
-                        "Player price couldn't be fetched. Try again later",Toast.LENGTH_LONG)
-                    toast.show()
-                    dialog.cancel()
-                }
-                else{
                     showLoadingSpinner(false)
 
                     playerNameTextView.text = (it.cardName)
@@ -141,7 +147,7 @@ class SinglePlayerDialog:DialogFragment() {
                                 notifiedPlayer.Lt = true
                             }
                             notifiedPlayer.TargetPrice = targetPrice.text.toString().toInt()
-                            notifiedPlayer.ClientId = mainActivityVm.clientId
+                            notifiedPlayer.ClientId = mainActivityVm.clientId.value!!
 
                             if(it.isEdited){
                                 mainActivityVm.editPlayerTrackingRequest(notifiedPlayer.PlayerId,notifiedPlayer)
@@ -149,11 +155,16 @@ class SinglePlayerDialog:DialogFragment() {
                             else{
                                 mainActivityVm.addPlayerTrackingRequest(notifiedPlayer)
                             }
-                            dialog.cancel()
+                            mainActivityVm.requestSuccessful.observe(this, Observer { requestSuccessful ->
+                                if(requestSuccessful){
+                                    Toast.makeText(requireContext(),"Player Tracking Request" +
+                                            " added successfully!",Toast.LENGTH_SHORT).show()
+                                    dismiss()
+                                }
+                            })
                         }
                     }
                 }
-            }
         })
         return dialog
     }
@@ -217,7 +228,7 @@ class SinglePlayerDialog:DialogFragment() {
     private fun getBaseDialog(view: View):AlertDialog{
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setView(view).setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.cancel()
+            dismiss()
         }.setPositiveButton(R.string.ok,null)
         return builder.create()
     }

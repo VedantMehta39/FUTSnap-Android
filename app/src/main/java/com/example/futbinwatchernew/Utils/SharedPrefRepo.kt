@@ -14,10 +14,7 @@ enum class SharedPrefFileNames{
 }
 
 class SharedPrefRepo(context: Context, fileName:SharedPrefFileNames){
-    var sharedPref:SharedPreferences
-    init {
-        sharedPref = context.getSharedPreferences(fileName.toString(), Context.MODE_PRIVATE)
-    }
+    var sharedPref:SharedPreferences = context.getSharedPreferences(fileName.toString(), Context.MODE_PRIVATE)
 
     fun readFromSharedPref(TAG: SharedPrefsTags):Any?{
         when(TAG){

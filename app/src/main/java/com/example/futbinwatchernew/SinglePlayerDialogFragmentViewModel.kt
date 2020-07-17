@@ -7,13 +7,14 @@ import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceResponse
 import com.example.futbinwatchernew.UI.Event
 import kotlinx.coroutines.launch
+import com.example.futbinwatchernew.Utils.Error
 import java.lang.Exception
 import javax.inject.Inject
 
 class SinglePlayerDialogFragmentViewModel:ViewModel() {
 
     @Inject lateinit var apiClient:ApiClient
-    var errorMessage = MutableLiveData<String>()
+    var error = MutableLiveData<Error>()
     var selectedPlayer = MutableLiveData<Event<PlayerDialogFragModel>>()
 
 
@@ -25,7 +26,8 @@ class SinglePlayerDialogFragmentViewModel:ViewModel() {
                 selectedPlayer.value = Event(data)
             }
             catch (e:Exception){
-                errorMessage.value = "Couldn't connect to FUTBIN Servers! Please try again later."
+                error.value = Error.GeneralError("Couldn't fetch the price from FUTBIN." +
+                        " Please try again later!")
             }
 
         }

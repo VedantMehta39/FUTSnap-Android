@@ -19,7 +19,7 @@ class NetworkModule(var baseURL:String) {
     @Provides
     fun provideRetrofit():Retrofit {
        val retrofit:Retrofit
-        if(baseURL.equals(FUTBINWatcherApp.PRICE_BASE_URL)){
+        if(baseURL == FUTBINWatcherApp.PRICE_BASE_URL){
             val responseType:Type = object: TypeToken<PlayerPriceWrapperResponse>() {}.type
             retrofit = Retrofit.Builder()
                 .baseUrl(baseURL)
