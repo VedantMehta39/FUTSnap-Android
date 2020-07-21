@@ -12,7 +12,7 @@ import java.lang.Exception
 
 class SinglePlayerDialogFragmentViewModel(var apiClient:ApiClient):ViewModel() {
 
-    var error = MutableLiveData<Error>()
+    var error = MutableLiveData<Event<Error>>()
     var selectedPlayer = MutableLiveData<Event<PlayerDialogFragModel>>()
 
     fun initSelectedPlayer(data: PlayerDialogFragModel){
@@ -23,8 +23,8 @@ class SinglePlayerDialogFragmentViewModel(var apiClient:ApiClient):ViewModel() {
                 selectedPlayer.value = Event(data)
             }
             catch (e:Exception){
-                error.value = Error.GeneralError("Couldn't fetch the price from FUTBIN." +
-                        " Please try again later!")
+                error.value = Event(Error.GeneralError("Couldn't fetch the price from FUTBIN." +
+                        " Please try again later!"))
             }
 
         }

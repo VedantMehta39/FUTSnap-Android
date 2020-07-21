@@ -6,12 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.UI.ErrorHandling.Error
+import com.example.futbinwatchernew.UI.Event
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class SearchPlayerViewModel(var apiClient:ApiClient):ViewModel() {
     var searchPlayersResult = MutableLiveData<List<SearchPlayerResponse>>()
-    var error = MutableLiveData<Error>()
+    var error = MutableLiveData<Event<Error>>()
 
     fun getSearchPlayerResults(fifaVersion:Int, searchTerm:String) {
         viewModelScope.launch {
@@ -20,8 +21,8 @@ class SearchPlayerViewModel(var apiClient:ApiClient):ViewModel() {
                 searchPlayersResult.value =  results
             }
             catch (e:Exception){
-                error.value = Error.GeneralError("Couldn't find any players or couldn't connect to " +
-                        "FUTBIN Servers. Please try again!")
+                error.value = Event(Error.GeneralError("Couldn't find any players or couldn't connect to " +
+                        "FUTBIN Servers. Please try again!"))
             }
         }
     }

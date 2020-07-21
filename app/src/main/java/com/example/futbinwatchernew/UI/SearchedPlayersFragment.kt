@@ -57,35 +57,35 @@ class SearchedPlayersFragment:Fragment() {
         val shimmer = requireActivity().findViewById<ShimmerFrameLayout>(R.id.search_shimmer)
         shimmer.setShimmer(Shimmer.AlphaHighlightBuilder().setAutoStart(false).build())
 
-        vm.error.observe(viewLifecycleOwner, Observer {error ->
-            shimmer.stopShimmer()
-            shimmer.visibility = View.GONE
-            when(error){
-                is Error.GeneralError -> {
-                    DynamicToast.makeError(requireContext(), error.message,Toast.LENGTH_LONG).show()
-                }
-                is Error.RegistrationError ->{
-                    val sharedPrefRepo = SharedPrefRepo(requireActivity(),
-                        SharedPrefFileNames.CLIENT_REGISTRATION)
-                    sharedPrefRepo.writeToSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC, false)
-                    parentFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.fragment_container_view_tag,
-                            ErrorFragment(error, clientUtility::addOrUpdateTokenOnServer), "ERROR_FRAG"
-                        ).commit()
-                }
-                is Error.ServerError ->{
-                    parentFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.fragment_container_view_tag,
-                            ErrorFragment(error,null), "ERROR_FRAG"
-                        ).commit()
-                }
+        vm.error.observe(viewLifecycleOwner, Observer {errorEvent ->
+            errorEvent.getContentIfNotHandled()?.let {
+                    error ->
+                shimmer.stopShimmer()
+                shimmer.visibility = View.GONE
+                when(error){
+                    is Error.GeneralError -> {
+                        DynamicToast.makeError(requireContext(), error.message,Toast.LENGTH_LONG).show()
+                    }
+                    is Error.RegistrationError ->{
+                        val sharedPrefRepo = SharedPrefRepo(requireActivity(),
+                            SharedPrefFileNames.CLIENT_REGISTRATION)
+                        sharedPrefRepo.writeToSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC, false)
+                        parentFragmentManager.beginTransaction()
+                            .replace(
+                                R.id.fragment_container_view_tag,
+                                ErrorFragment(error, clientUtility::addOrUpdateTokenOnServer), "ERROR_FRAG"
+                            ).commit()
+                    }
+                    is Error.ServerError ->{
+                        parentFragmentManager.beginTransaction()
+                            .replace(
+                                R.id.fragment_container_view_tag,
+                                ErrorFragment(error,null), "ERROR_FRAG"
+                            ).commit()
+                    }
 
+                }
             }
-
-
-
         })
 
         searchField.addTextChangedListener(object:TextWatcher{

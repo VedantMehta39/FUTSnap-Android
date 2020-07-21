@@ -151,12 +151,15 @@ class SinglePlayerDialog(val data: PlayerDialogFragModel) : DialogFragment() {
                 }
             }
         })
-        vm.error.observe(this, Observer { error ->
-            val errorHandler = ErrorHandling(
-                requireContext(),
-                parentFragmentManager, clientUtility::addOrUpdateTokenOnServer
-            )
-            errorHandler.handle(error)
+        vm.error.observe(this, Observer { errorEvent ->
+            errorEvent.getContentIfNotHandled()?.let {
+                    error ->
+                val errorHandler = ErrorHandling(
+                    requireContext(),
+                    parentFragmentManager, clientUtility::addOrUpdateTokenOnServer
+                )
+                errorHandler.handle(error)
+            }
         })
         return dialog
     }
