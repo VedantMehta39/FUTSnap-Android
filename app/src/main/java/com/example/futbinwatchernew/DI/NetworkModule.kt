@@ -1,9 +1,7 @@
 package com.example.futbinwatchernew.DI
 
-import com.example.futbinwatchernew.FUTBINWatcherApp
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.FUTBINPriceDeserialiser
-import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceResponse
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceWrapperResponse
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -12,32 +10,55 @@ import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
+import javax.inject.Named
+
+const val SEARCH_BASE_URL = "https://www.futbin.com"
+const val PRICE_BASE_URL = "https://futbin.org/futbin/api/fetchPlayerInformation/"
+const val SERVICE_BASE_URL = "http://localhost:4000/api/"
 
 @Module
-class NetworkModule(var baseURL:String) {
+class NetworkModule() {
 
     @Provides
-    fun provideRetrofit():Retrofit {
-       val retrofit:Retrofit
-        if(baseURL == FUTBINWatcherApp.PRICE_BASE_URL){
-            val responseType:Type = object: TypeToken<PlayerPriceWrapperResponse>() {}.type
-            retrofit = Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().
-                    registerTypeAdapter(responseType,FUTBINPriceDeserialiser()).create()))
-                .build()
-        }
-        else{
-            retrofit = Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        }
-        return retrofit
+    @Named("SEARCH")
+    fun provideRetrofitForSearch():Retrofit {
+        return Retrofit.Builder()
+             .baseUrl(SEARCH_BASE_URL)
+             .addConverterFactory(GsonConverterFactory.create())
+             .build()
     }
 
     @Provides
-    fun provideApiClient(retrofit:Retrofit) = retrofit.create(ApiClient::class.java)
+    @Named("PRICE")
+    fun provideRetrofitForPrice():Retrofit{
+        val responseType: Type = object: TypeToken<PlayerPriceWrapperResponse>() {}.type
+        return Retrofit.Builder()
+            .baseUrl(PRICE_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().
+                registerTypeAdapter(responseType, FUTBINPriceDeserialiser()).create()))
+            .build()
+    }
+
+    @Provides
+    @Named("SERVICE")
+    fun provideRetrofitForService():Retrofit{
+        return Retrofit.Builder()
+            .baseUrl(SERVICE_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Named("SEARCH")
+    fun provideApiClientForSearch(@Named("SEARCH") retrofit:Retrofit) = retrofit.create(ApiClient::class.java)
+
+    @Provides
+    @Named("PRICE")
+    fun provideApiClientForPrice(@Named("PRICE") retrofit:Retrofit) = retrofit.create(ApiClient::class.java)
+
+    @Provides
+    @Named("SERVICE")
+    fun provideApiClientForService(@Named("SERVICE") retrofit:Retrofit) = retrofit.create(ApiClient::class.java)
 
 
 }
