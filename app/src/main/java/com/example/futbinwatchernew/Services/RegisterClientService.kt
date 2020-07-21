@@ -15,13 +15,10 @@ import javax.inject.Inject
 
 class RegisterClientService:FirebaseMessagingService() {
     lateinit var sharedPrefRepo:SharedPrefRepo
-    @Inject
-    lateinit var apiClient: ApiClient
 
 
     override fun onNewToken(newToken: String) {
         super.onNewToken(newToken)
-        FUTBINWatcherApp.component["SERVICE"]!!.inject(this)
         sharedPrefRepo = SharedPrefRepo(this, SharedPrefFileNames.CLIENT_REGISTRATION)
         FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener{task ->
             if(!task.isSuccessful){
