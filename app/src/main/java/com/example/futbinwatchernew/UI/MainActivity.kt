@@ -4,15 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.futbinwatchernew.*
-import com.example.futbinwatchernew.UI.ErrorHandling.Error
 import com.example.futbinwatchernew.UI.ErrorHandling.ErrorHandling
+import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.Utils.*
 import com.google.firebase.iid.FirebaseInstanceId
-import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {

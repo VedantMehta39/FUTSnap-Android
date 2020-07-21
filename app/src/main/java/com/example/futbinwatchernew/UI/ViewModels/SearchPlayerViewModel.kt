@@ -1,4 +1,4 @@
-package com.example.futbinwatchernew
+package com.example.futbinwatchernew.UI.ViewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

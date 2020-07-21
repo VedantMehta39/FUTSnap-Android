@@ -1,12 +1,11 @@
 package com.example.futbinwatchernew.DI
 
 import androidx.lifecycle.ViewModel
-import com.example.futbinwatchernew.MainActivityViewModel
+import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.Network.ApiClient
-import com.example.futbinwatchernew.SearchPlayerViewModel
-import com.example.futbinwatchernew.SinglePlayerDialogFragmentViewModel
+import com.example.futbinwatchernew.UI.ViewModels.SearchPlayerViewModel
+import com.example.futbinwatchernew.UI.ViewModels.SinglePlayerDialogFragmentViewModel
 import com.example.futbinwatchernew.UI.CustomViewModelFactory
-import dagger.Binds
 import dagger.MapKey
 import dagger.Module
 import dagger.Provides
@@ -40,19 +39,28 @@ class ViewModelModule {
         @IntoMap
         @ViewModelKey(MainActivityViewModel::class)
         fun getMainActivityViewModel(@Named("SERVICE")apiClient: ApiClient):ViewModel
-                = MainActivityViewModel(apiClient)
+                =
+            MainActivityViewModel(
+                apiClient
+            )
 
         @Provides
         @IntoMap
         @ViewModelKey(SearchPlayerViewModel::class)
         fun getSearchPlayerViewModel(@Named("SEARCH")apiClient: ApiClient):ViewModel
-                = SearchPlayerViewModel(apiClient)
+                =
+            SearchPlayerViewModel(
+                apiClient
+            )
 
         @Provides
         @IntoMap
         @ViewModelKey(SinglePlayerDialogFragmentViewModel::class)
         fun getSinglePlayerDialogFragmentViewModel(@Named("PRICE")apiClient: ApiClient)
-                :ViewModel = SinglePlayerDialogFragmentViewModel(apiClient)
+                :ViewModel =
+            SinglePlayerDialogFragmentViewModel(
+                apiClient
+            )
     }
 
 

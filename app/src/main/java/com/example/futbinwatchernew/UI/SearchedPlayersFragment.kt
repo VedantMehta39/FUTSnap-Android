@@ -20,6 +20,7 @@ import com.example.futbinwatchernew.UI.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.UI.ErrorHandling.Error
 import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
+import com.example.futbinwatchernew.UI.ViewModels.SearchPlayerViewModel
 import com.example.futbinwatchernew.Utils.*
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -49,7 +50,7 @@ class SearchedPlayersFragment:Fragment() {
         super.onViewCreated(view, savedInstanceState)
         FUTBINWatcherApp.component.inject(this)
 
-        val vm:SearchPlayerViewModel = ViewModelProvider(this,customViewModelFactory).
+        val vm: SearchPlayerViewModel = ViewModelProvider(this,customViewModelFactory).
         get(SearchPlayerViewModel::class.java)
 
         val searchButton = view.findViewById<ImageButton>(R.id.enter)

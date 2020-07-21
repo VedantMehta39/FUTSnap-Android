@@ -13,7 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.futbinwatchernew.FUTBINWatcherApp
-import com.example.futbinwatchernew.MainActivityViewModel
+import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.UI.ErrorHandling.Error
 import com.example.futbinwatchernew.UI.ErrorHandling.ErrorType
@@ -51,7 +51,8 @@ class ErrorFragment(private val error: Error, private val retryAction:
         tv_error_message.text = error.message
         val btn_retryButton = view.findViewById<Button>(R.id.retry_button)
         retryAction?.run {
-            val vm = ViewModelProvider(requireActivity(),customViewModelFactory).get(MainActivityViewModel::class.java)
+            val vm = ViewModelProvider(requireActivity(),customViewModelFactory).get(
+                MainActivityViewModel::class.java)
             val sharedPrefRepo = SharedPrefRepo(requireActivity(), SharedPrefFileNames.CLIENT_REGISTRATION)
             val token = sharedPrefRepo.readFromSharedPref(SharedPrefsTags.FIREBASE_TOKEN_KEY)
                     as String

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,15 +11,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.futbinwatchernew.FUTBINWatcherApp
-import com.example.futbinwatchernew.MainActivityViewModel
+import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.UI.Models.Platform
 import com.example.futbinwatchernew.UI.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerTrackingRequest
-import com.example.futbinwatchernew.UI.ErrorHandling.Error
 import com.example.futbinwatchernew.UI.ErrorHandling.ErrorHandling
 import com.example.futbinwatchernew.Utils.*
-import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -51,7 +48,8 @@ class TrackedPlayersFragment: Fragment() {
     ): View = LayoutInflater.from(container!!.context).inflate(R.layout.tracked_players_recycler, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val mainActivityVm = ViewModelProvider(requireActivity(),customViewModelFactory).get(MainActivityViewModel::class.java)
+        val mainActivityVm = ViewModelProvider(requireActivity(),customViewModelFactory).get(
+            MainActivityViewModel::class.java)
         val recyclerView =  view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         val adapter = TrackedPlayersRecyclerViewAdapter(
