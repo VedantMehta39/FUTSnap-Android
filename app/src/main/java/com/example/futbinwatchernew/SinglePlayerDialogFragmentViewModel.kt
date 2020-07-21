@@ -7,16 +7,13 @@ import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerPriceResponse
 import com.example.futbinwatchernew.UI.Event
 import kotlinx.coroutines.launch
-import com.example.futbinwatchernew.Utils.Error
+import com.example.futbinwatchernew.UI.ErrorHandling.Error
 import java.lang.Exception
-import javax.inject.Inject
 
-class SinglePlayerDialogFragmentViewModel:ViewModel() {
+class SinglePlayerDialogFragmentViewModel(var apiClient:ApiClient):ViewModel() {
 
-    @Inject lateinit var apiClient:ApiClient
     var error = MutableLiveData<Error>()
     var selectedPlayer = MutableLiveData<Event<PlayerDialogFragModel>>()
-
 
     fun initSelectedPlayer(data: PlayerDialogFragModel){
         viewModelScope.launch {

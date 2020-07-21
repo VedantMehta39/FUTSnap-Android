@@ -2,42 +2,33 @@ package com.example.futbinwatchernew
 
 import androidx.lifecycle.*
 import com.example.futbinwatchernew.Network.ApiClient
-import com.example.futbinwatchernew.Network.ResponseModels.Client
 import com.example.futbinwatchernew.Network.ResponseModels.PlayerTrackingRequest
-import com.example.futbinwatchernew.Utils.Error
-import kotlinx.coroutines.launch
+import com.example.futbinwatchernew.UI.ErrorHandling.Error
+import com.example.futbinwatchernew.Utils.NetworkResponse
 import retrofit2.HttpException
 import java.lang.Exception
-import java.util.*
-import javax.inject.Inject
 
-class MainActivityViewModel(clientId:Int): ViewModel() {
+class MainActivityViewModel(var apiClient: ApiClient): ViewModel() {
 
-    @Inject
-    lateinit var apiClient: ApiClient
-
-    var clientId = MutableLiveData(clientId)
-
-    var error = MutableLiveData<Error>()
+    var clientId: Int = -1
 
     var allPlayerTrackingRequests = MutableLiveData<List<PlayerTrackingRequest>>()
-    var deletedTrackedPlayers = Stack<PlayerTrackingRequest>()
-    val requestSuccessful = MutableLiveData<Boolean>()
 
 
-    fun getPlayerTrackingRequests(){
-        viewModelScope.launch {
+    fun getPlayerTrackingRequests():LiveData<NetworkResponse<List<PlayerTrackingRequest>>>{
+        return liveData<NetworkResponse<List<PlayerTrackingRequest>>>(context = viewModelScope.coroutineContext){
             try{
-                allPlayerTrackingRequests.value = apiClient.getPlayerTrackingRequests(clientId.value!!)
+                val requests = apiClient.getPlayerTrackingRequests(clientId)
+               emit(NetworkResponse.Success(requests))
             }
             catch (e: Exception){
-                error.value = Error.ServerError()
+                emit(NetworkResponse.Failure(Error.ServerError()))
             }
         }
     }
 
-    fun addPlayerTrackingRequest(data: PlayerTrackingRequest){
-        viewModelScope.launch {
+    fun addPlayerTrackingRequest(data: PlayerTrackingRequest):LiveData<NetworkResponse<PlayerTrackingRequest>>{
+        return liveData<NetworkResponse<PlayerTrackingRequest>>(context = viewModelScope.coroutineContext){
             try{
                 apiClient.postPlayerTrackingRequests(data)
                 if(allPlayerTrackingRequests.value != null){
@@ -48,30 +39,41 @@ class MainActivityViewModel(clientId:Int): ViewModel() {
                 else{
                     allPlayerTrackingRequests.value = listOf(data)
                 }
-                requestSuccessful.value = true
+                emit(NetworkResponse.Success<PlayerTrackingRequest>(data))
             }
             catch (e:Exception){
-
                 when(e){
                     is HttpException -> {
-                        if (e.code() == 409){
-                            error.value = Error.GeneralError("Cannot track a duplicate player!")
+                        when(e.code()){
+                            402 -> emit(NetworkResponse.Failure(
+                                Error.GeneralError("Maximum " +
+                                    "number of requests reached! Upgrade to premium to track " +
+                                    "more players")))
+                            409 -> emit(NetworkResponse.Failure(
+                                Error.GeneralError("Cannot track a " +
+                                    "duplicate player!")))
+                            else -> emit(NetworkResponse.Failure(
+                                Error.GeneralError("Request " +
+                                    "Failed. Please try again!")))
                         }
+
                     }
                     else -> {
-                        error.value = Error.ServerError("Could not connect to server. Player not added." +
-                                " Please try again later!")
+                        emit(NetworkResponse.Failure(
+                            Error.ServerError("Could not connect to server. Player not added." +
+                                " Please try again later!")))
                     }
                 }
 
             }
+
         }
     }
 
-    fun editPlayerTrackingRequest(playerId:Int, data: PlayerTrackingRequest){
-        viewModelScope.launch {
+    fun editPlayerTrackingRequest(playerId:Int, data: PlayerTrackingRequest):LiveData<NetworkResponse<PlayerTrackingRequest>>{
+        return liveData(context = viewModelScope.coroutineContext){
             try{
-                apiClient.putPlayerTrackingRequests(playerId, clientId.value!!, data)
+                apiClient.putPlayerTrackingRequests(playerId, clientId, data)
                 if(allPlayerTrackingRequests.value != null){
                     val currentData = allPlayerTrackingRequests.value?.toMutableList()!!
                     currentData.removeIf { req -> req.PlayerId == playerId}
@@ -81,46 +83,42 @@ class MainActivityViewModel(clientId:Int): ViewModel() {
                 else{
                     allPlayerTrackingRequests.value = listOf(data)
                 }
-                requestSuccessful.value = true
+                emit(NetworkResponse.Success<PlayerTrackingRequest>(data))
             }
             catch (e: Exception){
-                error.value = Error.ServerError("Could not connect to server. Player not edited." +
-                        " Please try again later!")
+                when(e){
+                    is HttpException ->{
+                        if(e.code() == 404){
+                            emit(NetworkResponse.Failure(
+                                Error.GeneralError("Player not found. " +
+                                    "Please restart the application!")))
+                        }
+                    }
+                    else -> {
+                        emit(NetworkResponse.Failure(
+                            Error.ServerError("Could not connect to server. Player not edited." +
+                                " Please try again later!")))
+                    }
+                }
+            }
+        }
+
+    }
+
+    fun deletePlayerTrackingRequest(playerId: Int):LiveData<NetworkResponse<Int>>{
+        return liveData(context = viewModelScope.coroutineContext){
+            try {
+                val deletedRequest = apiClient.deletePlayerTrackingRequests(playerId,clientId)
+                val updatedList = allPlayerTrackingRequests.value?.filter { request ->
+                    request.PlayerId != deletedRequest.PlayerId
+                }
+                allPlayerTrackingRequests.value = updatedList
+                emit(NetworkResponse.Success<Int>(playerId))
+            }
+            catch (e:Exception){
+                emit(NetworkResponse.Failure(Error.ServerError()))
             }
         }
     }
 
-    fun deletePlayerTrackingRequest(playerId: Int){
-        viewModelScope.launch {
-            try {
-                apiClient.deletePlayerTrackingRequests(playerId,clientId.value!!)
-                requestSuccessful.value = true
-            }
-            catch (e:Exception){
-                error.value = Error.ServerError()
-            }
-        }
-    }
-
-    fun addClient(client: Client){
-        viewModelScope.launch {
-            try {
-                clientId.value = apiClient.postClient(client)
-            }
-            catch (e:Exception){
-                error.value = Error.RegistrationError()
-            }
-        }
-    }
-
-    fun editClient(client: Client){
-        viewModelScope.launch {
-            try {
-                apiClient.putClient(client.Id, client)
-            }
-            catch (e:Exception){
-                error.value = Error.RegistrationError()
-            }
-        }
-    }
 }

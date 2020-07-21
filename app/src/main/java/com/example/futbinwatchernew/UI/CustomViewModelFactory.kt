@@ -2,12 +2,15 @@ package com.example.futbinwatchernew.UI
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import javax.inject.Inject
+import javax.inject.Provider
 
 
-class CustomViewModelFactory(val clientId:Int):ViewModelProvider.Factory {
+@Suppress("UNCHECKED_CAST")
+class CustomViewModelFactory @Inject constructor(var viewModelMap:Map<Class<out ViewModel>,@JvmSuppressWildcards Provider<ViewModel>>):ViewModelProvider.Factory {
+
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return modelClass.getConstructor(Int::class.java).newInstance(clientId)
+        return viewModelMap[modelClass]?.get() as T
     }
-
 
 }

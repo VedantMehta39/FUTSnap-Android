@@ -5,15 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
-import com.example.futbinwatchernew.Utils.Error
+import com.example.futbinwatchernew.UI.ErrorHandling.Error
 import kotlinx.coroutines.launch
 import java.lang.Exception
-import javax.inject.Inject
 
-class SearchPlayerViewModel():ViewModel() {
+class SearchPlayerViewModel(var apiClient:ApiClient):ViewModel() {
     var searchPlayersResult = MutableLiveData<List<SearchPlayerResponse>>()
     var error = MutableLiveData<Error>()
-    @Inject lateinit var apiClient:ApiClient
 
     fun getSearchPlayerResults(fifaVersion:Int, searchTerm:String) {
         viewModelScope.launch {
