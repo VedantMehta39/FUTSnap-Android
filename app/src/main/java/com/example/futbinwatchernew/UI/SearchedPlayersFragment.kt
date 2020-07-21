@@ -18,17 +18,22 @@ import com.example.futbinwatchernew.*
 import com.example.futbinwatchernew.UI.Models.Platform
 import com.example.futbinwatchernew.UI.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
+import com.example.futbinwatchernew.UI.ErrorHandling.Error
 import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
-import com.example.futbinwatchernew.Utils.Error
-import com.example.futbinwatchernew.Utils.SharedPrefFileNames
-import com.example.futbinwatchernew.Utils.SharedPrefRepo
-import com.example.futbinwatchernew.Utils.SharedPrefsTags
+import com.example.futbinwatchernew.Utils.*
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import java.util.*
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class SearchedPlayersFragment:Fragment() {
 
+    @Inject
+    lateinit var customViewModelFactory: CustomViewModelFactory
+    @Inject
+    lateinit var clientUtility: ClientUtility
 
 
     override fun onCreateView(
@@ -42,9 +47,10 @@ class SearchedPlayersFragment:Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val vm:SearchPlayerViewModel = ViewModelProvider(this).
+        FUTBINWatcherApp.component.inject(this)
+
+        val vm:SearchPlayerViewModel = ViewModelProvider(this,customViewModelFactory).
         get(SearchPlayerViewModel::class.java)
-        FUTBINWatcherApp.component["SEARCH"]!!.inject(vm)
 
         val searchButton = view.findViewById<ImageButton>(R.id.enter)
         val searchField = view.findViewById<EditText>(R.id.searchBar)
@@ -56,7 +62,7 @@ class SearchedPlayersFragment:Fragment() {
             shimmer.visibility = View.GONE
             when(error){
                 is Error.GeneralError -> {
-                    Toast.makeText(requireContext(), error.message,Toast.LENGTH_LONG).show()
+                    DynamicToast.makeError(requireContext(), error.message,Toast.LENGTH_LONG).show()
                 }
                 is Error.RegistrationError ->{
                     val sharedPrefRepo = SharedPrefRepo(requireActivity(),
@@ -65,7 +71,7 @@ class SearchedPlayersFragment:Fragment() {
                     parentFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragment_container_view_tag,
-                            ErrorFragment(error, null), "ERROR_FRAG"
+                            ErrorFragment(error, clientUtility::addOrUpdateTokenOnServer), "ERROR_FRAG"
                         ).commit()
                 }
                 is Error.ServerError ->{
@@ -102,7 +108,7 @@ class SearchedPlayersFragment:Fragment() {
         })
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         val adapter = SearchPlayersRecyclerViewAdapter(
-            emptyList(),
+            ArrayList(),
              object:SelectedPlayerListener<SearchPlayerResponse>{
                 override fun onSearchedPlayerSelected(player: SearchPlayerResponse) {
                     if (parentFragmentManager.findFragmentByTag("PLAYER_DIALOG_FRAG") == null){
@@ -122,8 +128,7 @@ class SearchedPlayersFragment:Fragment() {
         vm.searchPlayersResult.observe(viewLifecycleOwner, Observer {
             shimmer.stopShimmer()
             shimmer.visibility = View.GONE
-            adapter.data = it
-            adapter.notifyDataSetChanged()
+            adapter.updateData(it)
             if(it.isEmpty()){
                 val toast = Toast.makeText(requireContext(),"No players found",Toast.LENGTH_SHORT)
                 toast.show()
