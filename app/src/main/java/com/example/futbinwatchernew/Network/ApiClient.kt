@@ -19,7 +19,7 @@ interface ApiClient {
     suspend fun postClient(@Body client: Client):Int
 
     @PUT("Clients/{clientId}")
-    suspend fun putClient(@Path("clientId") clientId: Int, @Body client: Client)
+    suspend fun putClient(@Path("clientId") clientId: Int, @Body client: Client):Int
 
     @GET("PlayerTrackingRequests/{clientId}")
     suspend fun getPlayerTrackingRequests(@Path("clientId") clientId: Int):List<PlayerTrackingRequest>
@@ -31,5 +31,5 @@ interface ApiClient {
     suspend fun putPlayerTrackingRequests(@Path("playerId") playerId:Int,@Path("clientId") clientId:Int, @Body trackingRequest: PlayerTrackingRequest)
 
     @DELETE("PlayerTrackingRequests/{playerId}/{clientId}")
-    suspend fun deletePlayerTrackingRequests(@Path("playerId") playerId:Int, @Path("clientId") clientId:Int)
+    suspend fun deletePlayerTrackingRequests(@Path("playerId") playerId:Int, @Path("clientId") clientId:Int):PlayerTrackingRequest
 }
