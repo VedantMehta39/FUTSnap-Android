@@ -10,7 +10,7 @@ import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.R
 import com.squareup.picasso.Picasso
 
-class SearchPlayersRecyclerViewAdapter(var data:List<SearchPlayerResponse>, var selectedPlayerListener:SelectedPlayerListener<SearchPlayerResponse>):RecyclerView.Adapter<SearchPlayersRecyclerViewAdapter.MyViewHolder>(){
+class SearchPlayersRecyclerViewAdapter(var data:ArrayList<SearchPlayerResponse>, var selectedPlayerListener:SelectedPlayerListener<SearchPlayerResponse>):RecyclerView.Adapter<SearchPlayersRecyclerViewAdapter.MyViewHolder>(){
     inner class MyViewHolder(view: View):RecyclerView.ViewHolder(view){
         val playerNameTextView = view.findViewById<TextView>(R.id.tv_player_name)
         val playerRatingTextView = view.findViewById<TextView>(R.id.tv_player_rating)
@@ -21,6 +21,12 @@ class SearchPlayersRecyclerViewAdapter(var data:List<SearchPlayerResponse>, var 
             Picasso.get().load(data.playerImage).into(playerImageView)
         }
 
+    }
+
+    fun updateData(newData:List<SearchPlayerResponse>){
+        data.clear()
+        data.addAll(newData)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

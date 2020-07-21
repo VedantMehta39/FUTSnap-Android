@@ -1,7 +1,6 @@
 package com.example.futbinwatchernew.UI
 
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -16,7 +15,7 @@ import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
 
-class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerTrackingRequest>, val selectedPlayerListener: SelectedPlayerListener<PlayerTrackingRequest>):RecyclerView.Adapter<TrackedPlayersRecyclerViewAdapter.MyViewHolder>(){
+class TrackedPlayersRecyclerViewAdapter(var data: ArrayList<PlayerTrackingRequest>, val selectedPlayerListener: SelectedPlayerListener<PlayerTrackingRequest>):RecyclerView.Adapter<TrackedPlayersRecyclerViewAdapter.MyViewHolder>(){
     inner class MyViewHolder(view: View):RecyclerView.ViewHolder(view){
         val trackedPlayerCard = view.findViewById<CardView>(R.id.player_card)
         val playerNameTextView = view.findViewById<TextView>(R.id.tv_player_name)
@@ -42,6 +41,12 @@ class TrackedPlayersRecyclerViewAdapter(var data: List<PlayerTrackingRequest>, v
 
             Picasso.get().load(data.Player!!.ImageUrl).into(playerImageView)
         }
+    }
+
+    fun updateData(newData:List<PlayerTrackingRequest>){
+        data.clear()
+        data.addAll(newData)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
