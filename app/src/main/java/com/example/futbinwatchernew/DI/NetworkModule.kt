@@ -14,7 +14,7 @@ import javax.inject.Named
 
 const val SEARCH_BASE_URL = "https://www.futbin.com"
 const val PRICE_BASE_URL = "https://futbin.org/futbin/api/fetchPlayerInformation/"
-const val SERVICE_BASE_URL = "http://localhost:4000/api/"
+const val SERVICE_BASE_URL = "http://futsnap.prescient.co.in/api/"
 
 @Module
 class NetworkModule() {
