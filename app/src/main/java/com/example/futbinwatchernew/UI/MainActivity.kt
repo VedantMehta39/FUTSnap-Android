@@ -68,13 +68,25 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            if(intent.getStringExtra("FRAGMENT") == "TRACKED_PLAYERS"){
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container_view_tag, SearchedPlayersFragment())
+                    .replace(R.id.fragment_container_view_tag, TrackedPlayersFragment.newInstance())
+                    .commit()
+            }
+            else{
+                supportFragmentManager.beginTransaction()
+                    .add(
+                        R.id.fragment_container_view_tag,
+                        SearchedPlayersFragment()
+                    )
+                    .commit()
+            }
 
-            supportFragmentManager.beginTransaction()
-                .add(
-                    R.id.fragment_container_view_tag,
-                    SearchedPlayersFragment()
-                )
-                .commit()
+
+            if(defaultClientId == -1){
+                NotificationsProblemInfoFragment().show(supportFragmentManager,"INFO_FRAG")
+            }
         }
 
     }
