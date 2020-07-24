@@ -1,17 +1,36 @@
 package com.example.futbinwatchernew.Services
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.os.Build
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.app.NotificationCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.example.futbinwatchernew.FUTBINWatcherApp
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.Client
+import com.example.futbinwatchernew.R
+import com.example.futbinwatchernew.UI.MainActivity
 import com.example.futbinwatchernew.Utils.SharedPrefFileNames
 import com.example.futbinwatchernew.Utils.SharedPrefRepo
 import com.example.futbinwatchernew.Utils.SharedPrefsTags
+import com.example.futbinwatchernew.UI.Models.Platform
+import com.example.futbinwatchernew.UI.TrackedPlayersFragment
+import com.example.futbinwatchernew.Utils.StringFormatter
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 class RegisterClientService:FirebaseMessagingService() {
     lateinit var sharedPrefRepo:SharedPrefRepo
@@ -30,6 +49,57 @@ class RegisterClientService:FirebaseMessagingService() {
         }
     }
 
+    override fun onMessageReceived(message: RemoteMessage) {
+        super.onMessageReceived(message)
+        if (message.data.isNotEmpty()){
+            sendNotification(message.data)
+        }
+    }
 
 
+    private fun sendNotification(data: Map<String,String>){
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val notificationChannel = NotificationChannel("Alert",
+                "Player Price Alert",NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.BLUE
+            notificationChannel.enableVibration(true)
+            manager.createNotificationChannel(notificationChannel)
+        }
+
+
+        val arrowIcon = if (data["Gte"] == "true") R.drawable.ic_green_arrow_up
+                        else R.drawable.ic_red_arrow_down
+
+        val intent = Intent(this,MainActivity::class.java)
+            .putExtra("FRAGMENT","TRACKED_PLAYERS")
+
+        val pendingIntent = PendingIntent.getActivity(this,0,
+            intent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+        val builder = NotificationCompat.Builder(this,"Alert")
+            .setAutoCancel(true)
+            .setContentTitle(parseDataForTitle(data))
+            .setContentText(parseDataForBody(data))
+            .setContentIntent(pendingIntent)
+            .setSmallIcon(R.drawable.ic_green_arrow_up)
+            .setLargeIcon(AppCompatResources.getDrawable(this,arrowIcon)!!.toBitmap())
+
+        val notification = builder.build()
+        manager.notify(Random.nextInt(),notification)
+    }
+
+    private fun parseDataForTitle(data:Map<String,String>): String {
+        val platform = Platform.values()[(data["Platform"] ?: error("")).toInt()]
+        return "${data["Name"]} $platform"
+    }
+
+    private fun parseDataForBody(data:Map<String,String>): String{
+        val currentPrice = StringFormatter.getLocaleFormattedStringFromNumber(data["Current Price"]!!.toInt())
+        val targetPrice = StringFormatter.getLocaleFormattedStringFromNumber(data["Target Price"]!!.toInt())
+        return "Current Price: $currentPrice    Target Price: $targetPrice"
+
+    }
 }
