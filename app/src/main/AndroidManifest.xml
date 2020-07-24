@@ -3,7 +3,6 @@
     package="com.example.futbinwatchernew">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:usesCleartextTraffic="true"
         android:name=".FUTBINWatcherApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
