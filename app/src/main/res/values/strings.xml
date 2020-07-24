@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FutbinWatcherNew</string>
+    <string name="app_name">FUTSnap</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="tracked_players">Tracked Players</string>
@@ -8,4 +8,9 @@
     <string name="gte"><![CDATA[>=]]></string>
     <string name="lt"><![CDATA[<]]></string>
     <string name="retry">Retry</string>
+    <string name="notification_problem_info">You might have some problems in receiving price alerts
+    from this app, this is due to some OEMs automatically killing the background processes to save
+    battery.\n\nIn order to receive price alerts in a timely manner, please turn off such settings. You
+    may refer to https://dontkillmyapp.com to learn about the default settings on your phone and a
+    way to turn off such settings.\nThank you!</string>
 </resources>
