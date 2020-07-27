@@ -8,6 +8,7 @@ import javax.inject.Singleton
 @Component(modules = [NetworkModule::class,ViewModelModule::class])
 interface ApplicationComponent {
     fun inject(activity: MainActivity)
+    fun inject(activity: LoginActivity)
     fun inject(fragment:SearchedPlayersFragment)
     fun inject(fragment: SinglePlayerDialog)
     fun inject(fragment: TrackedPlayersFragment)
