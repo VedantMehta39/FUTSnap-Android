@@ -1,6 +1,6 @@
 package com.example.futbinwatchernew.Network.ResponseModels
 
-data class Client(val Id:Int, val ClientToken: String, var MaxNumberOfRequests:Int?)
+data class Client(val Id:Int, val Email:String, val ClientToken: String, var MaxNumberOfRequests:Int?)
 
 data class Player(val PlayerId:Int, val CardName:String, val ImageUrl:String)
 
