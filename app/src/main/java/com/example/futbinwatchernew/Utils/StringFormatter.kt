@@ -5,7 +5,14 @@ import java.util.*
 
 class StringFormatter{
     companion object{
-        fun getLocaleFormattedStringFromNumber(value:Int) = NumberFormat.getNumberInstance(Locale.getDefault()).format(value)
+        fun getLocaleFormattedStringFromNumber(value:Int?):String {
+            return if (value != null){
+                NumberFormat.getNumberInstance(Locale.getDefault()).format(value)
+            }
+            else{
+                ""
+            }
+        }
         fun getNumberFromLocaleFormattedString(value:String) = NumberFormat.getNumberInstance(Locale.getDefault()).parse(value)!!.toInt()
     }
 }

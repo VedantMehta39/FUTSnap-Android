@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 enum class SharedPrefsTags{
     FIREBASE_TOKEN_KEY,
     CLIENT_ID,
-    IS_DATABASE_IN_SYNC
+    CLIENT_EMAIL
 }
 
 enum class SharedPrefFileNames{
@@ -22,10 +22,10 @@ class SharedPrefRepo(context: Context, fileName:SharedPrefFileNames){
                 return sharedPref.getString(TAG.toString(), null)
             }
             SharedPrefsTags.CLIENT_ID ->{
-                return sharedPref.getInt(TAG.toString(), -1)
+                return sharedPref.getInt(TAG.toString(), 0)
             }
-            SharedPrefsTags.IS_DATABASE_IN_SYNC ->{
-                return sharedPref.getBoolean(TAG.toString(), false)
+            SharedPrefsTags.CLIENT_EMAIL ->{
+                return sharedPref.getString(TAG.toString(), null)
             }
         }
     }
@@ -38,8 +38,8 @@ class SharedPrefRepo(context: Context, fileName:SharedPrefFileNames){
                 SharedPrefsTags.CLIENT_ID ->{
                     putInt(TAG.toString(), value as Int)
                 }
-                SharedPrefsTags.IS_DATABASE_IN_SYNC ->{
-                    putBoolean(TAG.toString(), value as Boolean)
+                SharedPrefsTags.CLIENT_EMAIL -> {
+                    putString(TAG.toString(), value as String)
                 }
             }
             commit()
