@@ -14,15 +14,13 @@ import javax.inject.Named
 class ClientUtility @Inject constructor( @Named("SERVICE") var apiClient: ApiClient) {
 
 
-    fun addOrUpdateTokenOnServer(context: Context, newToken: String): LiveData<NetworkResponse<Int>> {
-        val sharedPrefRepo = SharedPrefRepo(context, SharedPrefFileNames.CLIENT_REGISTRATION)
-        val clientId = sharedPrefRepo.readFromSharedPref(SharedPrefsTags.CLIENT_ID) as Int
-        return if (clientId == -1) {
-            addClient(Client(0, newToken, null))
-        } else {
-            editClient(Client(clientId, newToken, null))
-        }
+    fun addOrUpdateTokenOnServer(client: Client): LiveData<NetworkResponse<Int>> {
 
+        return if (client.Id == 0) {
+            addClient(client)
+        } else {
+            editClient(client)
+        }
 
     }
 
