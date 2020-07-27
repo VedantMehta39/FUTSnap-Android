@@ -98,7 +98,7 @@ class SinglePlayerDialog(val data: PlayerDialogFragModel) : DialogFragment() {
                         if (chosenComparisonDirectionIds.contains(R.id.lt_target)) {
                             notifiedPlayer.Lt = true
                         }
-                        notifiedPlayer.TargetPrice = targetPrice.text.toString().toInt()
+                        notifiedPlayer.TargetPrice = StringFormatter.getNumberFromLocaleFormattedString(targetPrice.text.toString())
                         notifiedPlayer.ClientId = mainActivityVm.clientId
 
                         if (it.isEdited) {
@@ -198,7 +198,8 @@ class SinglePlayerDialog(val data: PlayerDialogFragModel) : DialogFragment() {
 
     private fun bindDataToView(data: PlayerDialogFragModel) {
         playerNameTextView.text = (data.cardName)
-        targetPrice.setText(data.targetPrice?.toString())
+
+        targetPrice.setText(StringFormatter.getLocaleFormattedStringFromNumber(data.targetPrice))
 
         if (data.gte) {
             gte_lt_toggle.check(R.id.gte_target)
