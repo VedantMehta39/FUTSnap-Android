@@ -16,6 +16,7 @@ import com.example.futbinwatchernew.FUTBINWatcherApp
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.Client
 import com.example.futbinwatchernew.R
+import com.example.futbinwatchernew.UI.LoginActivity
 import com.example.futbinwatchernew.UI.MainActivity
 import com.example.futbinwatchernew.Utils.SharedPrefFileNames
 import com.example.futbinwatchernew.Utils.SharedPrefRepo
@@ -73,8 +74,9 @@ class RegisterClientService:FirebaseMessagingService() {
         val arrowIcon = if (data["Gte"] == "true") R.drawable.ic_green_arrow_up
                         else R.drawable.ic_red_arrow_down
 
-        val intent = Intent(this,MainActivity::class.java)
-            .putExtra("FRAGMENT","TRACKED_PLAYERS")
+        val intent = Intent(this,LoginActivity::class.java)
+            .putExtra("FROM", "REGISTER_CLIENT_SERVICE")
+            .putExtra("TO","TRACKED_PLAYERS_FRAGMENT")
 
         val pendingIntent = PendingIntent.getActivity(this,0,
             intent, PendingIntent.FLAG_CANCEL_CURRENT)
