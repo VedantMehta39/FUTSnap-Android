@@ -10,7 +10,7 @@ import java.lang.Exception
 
 class MainActivityViewModel(var apiClient: ApiClient): ViewModel() {
 
-    var clientId: Int = -1
+    var clientId: Int = 0
 
     var allPlayerTrackingRequests = MutableLiveData<List<PlayerTrackingRequest>>()
 
