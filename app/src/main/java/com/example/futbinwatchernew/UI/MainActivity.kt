@@ -4,13 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.futbinwatchernew.*
-import com.example.futbinwatchernew.UI.ErrorHandling.ErrorHandling
 import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.Utils.*
-import com.google.firebase.iid.FirebaseInstanceId
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -26,66 +23,27 @@ class MainActivity : AppCompatActivity() {
         FUTBINWatcherApp.component.inject(this)
         if(savedInstanceState == null){
             val sharedPrefRepo = SharedPrefRepo(this, SharedPrefFileNames.CLIENT_REGISTRATION)
-            val firebaseToken = sharedPrefRepo.readFromSharedPref(SharedPrefsTags.FIREBASE_TOKEN_KEY) as String?
-
             val defaultClientId = sharedPrefRepo.readFromSharedPref(SharedPrefsTags.CLIENT_ID) as Int
             val vm = ViewModelProvider(this, customViewModelFactory).get(MainActivityViewModel::class.java)
             vm.clientId = defaultClientId
 
-            // CASE: FirebaseToken updated in background
-            if(firebaseToken != null){
-                // Retrieve the token from SharedPref, if not synced then sync on serve
-                if(!(sharedPrefRepo.readFromSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC) as Boolean)){
-                    clientUtility.addOrUpdateTokenOnServer(this,firebaseToken).observe(this,
-                        Observer {response ->
-                            when (response) {
-                                is NetworkResponse.Success -> {
-                                    sharedPrefRepo.writeToSharedPref(SharedPrefsTags.CLIENT_ID, response.data)
-                                    sharedPrefRepo.writeToSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC, true)
-                                    vm.clientId = response.data
-                                }
-                                is NetworkResponse.Failure -> ErrorHandling(this,
-                                    supportFragmentManager, clientUtility::addOrUpdateTokenOnServer)
-                            }
-                        })
+            supportFragmentManager.beginTransaction()
+                .add(
+                    R.id.fragment_container_view_tag,
+                    SearchedPlayersFragment()
+                )
+                .commit()
+
+            when(intent.getStringExtra("TO")){
+                "NOTIFICATION_PROBLEM_INFO_FRAGMENT" -> {
+                    NotificationsProblemInfoFragment().show(supportFragmentManager,"INFO_FRAG")
                 }
-
-            }
-            else{
-                // CASE: FirebaseToken updated in foreground
-                FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
-                    clientUtility.addOrUpdateTokenOnServer(this,it.token).observe(this, Observer {response ->
-                        when (response) {
-                            is NetworkResponse.Success -> {
-                                sharedPrefRepo.writeToSharedPref(SharedPrefsTags.CLIENT_ID, response.data)
-                                sharedPrefRepo.writeToSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC, true)
-                                vm.clientId = response.data
-                            }
-                            is NetworkResponse.Failure -> ErrorHandling(this,
-                                supportFragmentManager, clientUtility::addOrUpdateTokenOnServer)
-                        }
-                    })
+                "TRACKED_PLAYERS_FRAGMENT" ->{
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_view_tag,
+                            TrackedPlayersFragment.newInstance()).addToBackStack(null)
+                        .commit()
                 }
-            }
-
-            if(intent.getStringExtra("FRAGMENT") == "TRACKED_PLAYERS"){
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container_view_tag, SearchedPlayersFragment())
-                    .replace(R.id.fragment_container_view_tag, TrackedPlayersFragment.newInstance())
-                    .commit()
-            }
-            else{
-                supportFragmentManager.beginTransaction()
-                    .add(
-                        R.id.fragment_container_view_tag,
-                        SearchedPlayersFragment()
-                    )
-                    .commit()
-            }
-
-
-            if(defaultClientId == -1){
-                NotificationsProblemInfoFragment().show(supportFragmentManager,"INFO_FRAG")
             }
         }
 
