@@ -13,6 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.futbinwatchernew.FUTBINWatcherApp
+import com.example.futbinwatchernew.Network.ResponseModels.Client
 import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.UI.ErrorHandling.Error
@@ -22,7 +23,7 @@ import javax.inject.Inject
 
 
 class ErrorFragment(private val error: Error, private val retryAction:
-((context: Context, newToken:String) -> LiveData<NetworkResponse<Int>>)?):Fragment() {
+((client: Client) -> LiveData<NetworkResponse<Int>>)?):Fragment() {
 
     @Inject
     lateinit var customViewModelFactory: CustomViewModelFactory
@@ -54,15 +55,17 @@ class ErrorFragment(private val error: Error, private val retryAction:
             val vm = ViewModelProvider(requireActivity(),customViewModelFactory).get(
                 MainActivityViewModel::class.java)
             val sharedPrefRepo = SharedPrefRepo(requireActivity(), SharedPrefFileNames.CLIENT_REGISTRATION)
-            val token = sharedPrefRepo.readFromSharedPref(SharedPrefsTags.FIREBASE_TOKEN_KEY)
+            val clientToken = sharedPrefRepo.readFromSharedPref(SharedPrefsTags.FIREBASE_TOKEN_KEY)
                     as String
+            val clientId = sharedPrefRepo.readFromSharedPref(SharedPrefsTags.CLIENT_ID) as Int
+            val clientEmail = sharedPrefRepo.readFromSharedPref(SharedPrefsTags.CLIENT_EMAIL) as String
+            val client = Client(clientId,clientEmail, clientToken, null)
             btn_retryButton.visibility = View.VISIBLE
             btn_retryButton.setOnClickListener{
-                this.invoke(requireContext(), token).observe(requireActivity(), Observer {response ->
+                this.invoke(client).observe(requireActivity(), Observer {response ->
                     when (response) {
                         is NetworkResponse.Success -> {
                             sharedPrefRepo.writeToSharedPref(SharedPrefsTags.CLIENT_ID, response.data)
-                            sharedPrefRepo.writeToSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC, true)
                             vm.clientId = response.data
                             parentFragmentManager.beginTransaction()
                                 .replace(R.id.fragment_container_view_tag,

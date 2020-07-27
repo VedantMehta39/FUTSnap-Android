@@ -68,9 +68,6 @@ class SearchedPlayersFragment:Fragment() {
                         DynamicToast.makeError(requireContext(), error.message,Toast.LENGTH_LONG).show()
                     }
                     is Error.RegistrationError ->{
-                        val sharedPrefRepo = SharedPrefRepo(requireActivity(),
-                            SharedPrefFileNames.CLIENT_REGISTRATION)
-                        sharedPrefRepo.writeToSharedPref(SharedPrefsTags.IS_DATABASE_IN_SYNC, false)
                         parentFragmentManager.beginTransaction()
                             .replace(
                                 R.id.fragment_container_view_tag,
