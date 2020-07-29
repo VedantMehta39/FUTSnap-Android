@@ -14,8 +14,8 @@ interface ApiClient {
     @GET("?platform=PS")
     suspend fun getCurrentPriceFor(@Query("ID")playerId:Int,@Query("platform")platform:Platform):PlayerPriceWrapperResponse
 
-    @GET("Clients/")
-    suspend fun getClient(@Query("Email") email:String):List<Client>
+    @GET("Clients/{email}")
+    suspend fun getClientByEmail(@Path("email") email:String):Client
 
     @POST("Clients/")
     suspend fun postClient(@Body client: Client):Int
