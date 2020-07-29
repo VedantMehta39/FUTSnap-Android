@@ -3,4 +3,6 @@
     <color name="colorPrimary">#93a2b6</color>
     <color name="colorPrimaryDark">	#46587f</color>
     <color name="colorAccent">#abded6</color>
+    <color name="profit_notification">#53E320</color>
+    <color name="loss_notification">#D31616</color>
 </resources>
