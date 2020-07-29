@@ -19,15 +19,20 @@ recommended by Google and it uses the following popular libraries:
   <tr>
     <td>Player Search Results</td>
      <td>Player Selection Dialog</td>
+  </tr>
+  <tr>
+    <td><img src="app/DiagramsAndScreenshots/SearchPlayerResultsScreen.png" width=270 height=480></td>
+    <td><img src="app/DiagramsAndScreenshots/SelectedPlayerDialogScreen.png" width=270 height=480></td>
+  </tr>
+  <tr>
      <td>Tracked Player List</td>
      <td>Player Price Alert</td>
   </tr>
   <tr>
-    <td><img src="app/DiagramsAndScreenshots/SearchPlayerResultsScreen.png" width=261 height=464></td>
-    <td><img src="app/DiagramsAndScreenshots/SelectedPlayerDialogScreen.png" width=261 height=464></td>
-    <td><img src="app/DiagramsAndScreenshots/TrackedPlayerListScreen.png" width=261 height=464></td>
-    <td><img src="app/DiagramsAndScreenshots/PriceAlertNotificationScreen.png" width=261 height=464></td>
+    <td><img src="app/DiagramsAndScreenshots/TrackedPlayerListScreen.png" width=270 height=480></td>
+    <td><img src="app/DiagramsAndScreenshots/PriceAlertNotificationScreen.png" width=270 height=480></td>
   </tr>
+  
  </table>
 
  ## Architecture Diagram
