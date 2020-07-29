@@ -1,18 +1,38 @@
 package com.example.futbinwatchernew.Utils
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.example.futbinwatchernew.FUTBINWatcherApp
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.Client
 import com.example.futbinwatchernew.UI.ErrorHandling.Error
+import retrofit2.HttpException
 import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
 class ClientUtility @Inject constructor( @Named("SERVICE") var apiClient: ApiClient) {
-
+    suspend fun getClientByEmail(email:String):NetworkResponse<Client>{
+        try{
+            val client = apiClient.getClientByEmail(email)
+            return NetworkResponse.Success(client)
+        }
+        catch (e:Exception){
+            when(e){
+                is HttpException ->{
+                    if(e.code() == 404){
+                        return NetworkResponse.Failure(Error.ServerError("User email not found!"))
+                    }
+                    else{
+                        return NetworkResponse.Failure(Error.ServerError("Some error occurred. " +
+                                "Please try again later!"))
+                    }
+                }
+                else -> return NetworkResponse.Failure(Error.ServerError("Some error occurred. " +
+                        "Please try again later!"))
+            }
+        }
+    }
 
     fun addOrUpdateTokenOnServer(client: Client): LiveData<NetworkResponse<Int>> {
 
