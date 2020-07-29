@@ -36,8 +36,9 @@ class LoginActivity: AppCompatActivity()  {
     lateinit var customViewModelFactory: CustomViewModelFactory
     @Inject
     lateinit var clientUtility: ClientUtility
-    @Inject @Named("SERVICE")
-    lateinit var apiClient: ApiClient
+
+    lateinit var errorHandler:ErrorHandling
+
 
     lateinit var spinner:ProgressBar
 
@@ -62,8 +63,11 @@ class LoginActivity: AppCompatActivity()  {
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-        googleSignInClient = GoogleSignIn.getClient(this,gso)
         FUTBINWatcherApp.component.inject(this)
+        errorHandler = ErrorHandling(this,
+            supportFragmentManager,
+            clientUtility::addOrUpdateTokenOnServer)
+        googleSignInClient = GoogleSignIn.getClient(this,gso)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -91,7 +95,7 @@ class LoginActivity: AppCompatActivity()  {
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful) {
-                    val client:Client
+                    val client:Client?
                     val loggedInUserEmail = auth.currentUser!!.email!!
 
                     val sharedPrefRepo = SharedPrefRepo(this, SharedPrefFileNames.CLIENT_REGISTRATION)
@@ -104,28 +108,47 @@ class LoginActivity: AppCompatActivity()  {
                         if (loggedInUserClientId == 0){
                             runBlocking {
                                 withContext(Dispatchers.IO){
-                                    val oldClient = apiClient.getClient(loggedInUserEmail)[0]
-                                    client = Client(oldClient.Id,oldClient.Email,firebaseToken!!,null)
-                                    sharedPrefRepo.writeToSharedPref(SharedPrefsTags.CLIENT_ID,client.Id)
+                                    val response = clientUtility
+                                        .getClientByEmail(loggedInUserEmail)
+                                    when(response){
+                                        is NetworkResponse.Success -> {
+                                            val oldClient = response.data
+                                            client = Client(oldClient.Id,oldClient.Email,firebaseToken!!,null)
+                                            sharedPrefRepo.writeToSharedPref(SharedPrefsTags.CLIENT_ID,client.Id)
+                                        }
+                                        is NetworkResponse.Failure ->{
+                                            client = null
+                                            auth.currentUser!!.delete()
+                                            errorHandler.handle(response.error)
+                                        }
+                                    }
                                 }
                             }
+
                         }
                         else{
                             client = Client(loggedInUserClientId,loggedInUserEmail,firebaseToken!!,null)
                         }
                     }
-                        clientUtility.addOrUpdateTokenOnServer(client).observe(this, Observer {response ->
-                                when (response) {
-                                    is NetworkResponse.Success -> {
-                                        sharedPrefRepo.writeToSharedPref(SharedPrefsTags.CLIENT_ID, response.data)
-                                    }
-                                    is NetworkResponse.Failure -> ErrorHandling(this,
-                                        supportFragmentManager, clientUtility::addOrUpdateTokenOnServer)
 
+                    client?.let {
+                        clientUtility.addOrUpdateTokenOnServer(it).observe(this, Observer {response ->
+                            when (response) {
+                                is NetworkResponse.Success -> {
+                                    sharedPrefRepo.writeToSharedPref(SharedPrefsTags.CLIENT_ID, response.data)
                                 }
+                                is NetworkResponse.Failure -> {
+                                    ErrorHandling(this,
+                                        supportFragmentManager,
+                                        clientUtility::addOrUpdateTokenOnServer)
+                                        .handle(response.error)
+                                    auth.currentUser!!.delete()
+                                }
+
+                            }
                             updateUI(task.result!!.additionalUserInfo!!.isNewUser)
                         })
-
+                    }
                 }
                 else{
                     Toast.makeText(this, "Google Sign-in failed", Toast.LENGTH_SHORT)
