@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.futbinwatchernew.FUTBINWatcherApp
 import com.example.futbinwatchernew.Network.ApiClient
@@ -71,8 +72,17 @@ class RegisterClientService:FirebaseMessagingService() {
         }
 
 
-        val arrowIcon = if (data["Gte"] == "true") R.drawable.ic_green_arrow_up
-                        else R.drawable.ic_red_arrow_down
+        val arrowIcon:Int
+        val arrowColor:Int
+        if (data["Gte"] == "true"){
+            arrowIcon = R.drawable.ic_green_arrow_up
+            arrowColor = R.color.profit_notification
+        }
+        else{
+            arrowIcon = R.drawable.ic_red_arrow_down
+            arrowColor = R.color.loss_notification
+        }
+
 
         val intent = Intent(this,LoginActivity::class.java)
             .putExtra("FROM", "REGISTER_CLIENT_SERVICE")
@@ -86,8 +96,9 @@ class RegisterClientService:FirebaseMessagingService() {
             .setContentTitle(parseDataForTitle(data))
             .setContentText(parseDataForBody(data))
             .setContentIntent(pendingIntent)
-            .setSmallIcon(R.drawable.ic_green_arrow_up)
-            .setLargeIcon(AppCompatResources.getDrawable(this,arrowIcon)!!.toBitmap())
+            .setSmallIcon(arrowIcon)
+            .setColor(ContextCompat.getColor(this, arrowColor))
+            .setLargeIcon(BitmapFactory.decodeResource(resources,R.mipmap.ic_launcher_foreground))
 
         val notification = builder.build()
         manager.notify(Random.nextInt(),notification)
