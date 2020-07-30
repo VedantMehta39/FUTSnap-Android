@@ -8,10 +8,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.futbinwatchernew.FUTBINWatcherApp
-import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.Network.ResponseModels.Client
 import com.example.futbinwatchernew.R
 import com.example.futbinwatchernew.UI.ErrorHandling.ErrorHandling
+import com.example.futbinwatchernew.UI.ViewModels.CustomViewModelFactory
 import com.example.futbinwatchernew.Utils.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class LoginActivity: AppCompatActivity()  {
     private val RC_SIGN_IN = 4040

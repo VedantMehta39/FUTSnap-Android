@@ -3,14 +3,10 @@ package com.example.futbinwatchernew.UI
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -23,6 +19,7 @@ import com.example.futbinwatchernew.UI.Models.PlayerDialogFragModel
 import com.example.futbinwatchernew.Network.ResponseModels.SearchPlayerResponse
 import com.example.futbinwatchernew.UI.ErrorHandling.Error
 import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
+import com.example.futbinwatchernew.UI.ViewModels.CustomViewModelFactory
 import com.example.futbinwatchernew.UI.ViewModels.SearchPlayerViewModel
 import com.example.futbinwatchernew.Utils.*
 import com.facebook.shimmer.Shimmer

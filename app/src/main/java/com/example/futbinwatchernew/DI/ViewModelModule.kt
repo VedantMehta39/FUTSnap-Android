@@ -5,8 +5,7 @@ import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.Network.ApiClient
 import com.example.futbinwatchernew.UI.ViewModels.SearchPlayerViewModel
 import com.example.futbinwatchernew.UI.ViewModels.SinglePlayerDialogFragmentViewModel
-import com.example.futbinwatchernew.UI.CustomViewModelFactory
-import com.example.futbinwatchernew.Utils.ClientUtility
+import com.example.futbinwatchernew.UI.ViewModels.CustomViewModelFactory
 import dagger.MapKey
 import dagger.Module
 import dagger.Provides
@@ -34,7 +33,10 @@ class ViewModelModule {
         @Singleton
         @Provides
         fun provideViewModelFactory(viewModelMap:Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>)
-                = CustomViewModelFactory(viewModelMap)
+                =
+            CustomViewModelFactory(
+                viewModelMap
+            )
 
         @Provides
         @IntoMap

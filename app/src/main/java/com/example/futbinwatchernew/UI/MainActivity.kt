@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import com.example.futbinwatchernew.*
+import com.example.futbinwatchernew.UI.ViewModels.CustomViewModelFactory
 import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.Utils.*
 import javax.inject.Inject

@@ -18,6 +18,7 @@ import com.example.futbinwatchernew.Network.ResponseModels.PlayerTrackingRequest
 import com.example.futbinwatchernew.UI.ErrorHandling.ErrorHandling
 import com.example.futbinwatchernew.UI.Validators.TextContentValidator
 import com.example.futbinwatchernew.UI.Validators.TextLengthValidator
+import com.example.futbinwatchernew.UI.ViewModels.CustomViewModelFactory
 import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.UI.ViewModels.SinglePlayerDialogFragmentViewModel
 import com.example.futbinwatchernew.Utils.*
