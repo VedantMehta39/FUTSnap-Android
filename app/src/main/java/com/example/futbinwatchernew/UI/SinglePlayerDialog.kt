@@ -22,6 +22,7 @@ import com.example.futbinwatchernew.UI.ViewModels.CustomViewModelFactory
 import com.example.futbinwatchernew.UI.ViewModels.MainActivityViewModel
 import com.example.futbinwatchernew.UI.ViewModels.SinglePlayerDialogFragmentViewModel
 import com.example.futbinwatchernew.Utils.*
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
@@ -41,8 +42,8 @@ class SinglePlayerDialog(val data: PlayerDialogFragModel) : DialogFragment() {
     lateinit var currentPriceTextView: TextView
     lateinit var targetPrice: TextInputEditText
     lateinit var playerNameTextView: TextView
-    lateinit var psPlatformButton: Button
-    lateinit var xboxPlatformButton: Button
+    lateinit var psPlatformButton: MaterialButton
+    lateinit var xboxPlatformButton: MaterialButton
     lateinit var platform_toggle: MaterialButtonToggleGroup
     lateinit var gte_lt_toggle: MaterialButtonToggleGroup
     lateinit var progressBar: ProgressBar
@@ -190,8 +191,8 @@ class SinglePlayerDialog(val data: PlayerDialogFragModel) : DialogFragment() {
         })
 
         playerNameTextView = view.findViewById<TextView>(R.id.tv_player_name)
-        psPlatformButton = view.findViewById<Button>(R.id.ps_button)
-        xboxPlatformButton = view.findViewById<Button>(R.id.xbox_button)
+        psPlatformButton = view.findViewById<MaterialButton>(R.id.ps_button)
+        xboxPlatformButton = view.findViewById<MaterialButton>(R.id.xbox_button)
         platform_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.platform_toggle)
         gte_lt_toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.gte_lt_toggle)
         progressBar = view.findViewById<ProgressBar>(R.id.dialog_load_spinner)

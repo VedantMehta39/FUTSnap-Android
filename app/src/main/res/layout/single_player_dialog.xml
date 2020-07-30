@@ -75,48 +75,56 @@
             android:id="@+id/platform_toggle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
+            android:layout_weight="0.5"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
             app:selectionRequired="true"
             app:singleSelection="true"
             >
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/ps_button"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
                 app:icon="@drawable/ic_icons8_playstation"
-                style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                app:iconGravity="textStart"
                 />
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/xbox_button"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
                 app:icon="@drawable/ic_icons8_xbox"
-                style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                app:iconGravity="textStart"
                 />
         </com.google.android.material.button.MaterialButtonToggleGroup>
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/gte_lt_toggle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
+            android:layout_weight="0.5"
+            android:layout_marginStart="4dp"
             android:gravity="center"
             app:selectionRequired="true"
             app:singleSelection="true"
             >
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/gte_target"
                 android:text="@string/gte"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 />
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/lt_target"
                 android:text="@string/lt"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
