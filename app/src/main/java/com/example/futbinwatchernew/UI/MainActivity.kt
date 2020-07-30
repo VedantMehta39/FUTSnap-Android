@@ -68,7 +68,10 @@ class MainActivity : AppCompatActivity() {
                     .commit()
 
                 }
+            else{
+                supportFragmentManager.popBackStack()
             }
+        }
         return true
     }
 
