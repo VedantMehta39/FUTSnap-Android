@@ -3,11 +3,14 @@ package com.example.futbinwatchernew.UI
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -24,6 +27,8 @@ import com.example.futbinwatchernew.UI.ViewModels.SearchPlayerViewModel
 import com.example.futbinwatchernew.Utils.*
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import java.util.*
 import javax.inject.Inject
@@ -52,9 +57,8 @@ class SearchedPlayersFragment:Fragment() {
 
         val vm: SearchPlayerViewModel = ViewModelProvider(this,customViewModelFactory).
         get(SearchPlayerViewModel::class.java)
-
-        val searchButton = view.findViewById<ImageButton>(R.id.enter)
-        val searchField = view.findViewById<EditText>(R.id.searchBar)
+        val searchFieldLayout = view.findViewById<TextInputLayout>(R.id.search_bar_layout)
+        val searchField = view.findViewById<TextInputEditText>(R.id.search_bar)
         val shimmer = requireActivity().findViewById<ShimmerFrameLayout>(R.id.search_shimmer)
         shimmer.setShimmer(Shimmer.AlphaHighlightBuilder().setAutoStart(false).build())
 
@@ -98,7 +102,10 @@ class SearchedPlayersFragment:Fragment() {
                 text?.let {
                     val validator = TextLengthValidator(3,null)
                     if(!validator.validate(it.toString())){
-                        searchField.error = validator.errorMessage
+                        searchFieldLayout.error = validator.errorMessage
+                    }
+                    else{
+                        searchFieldLayout.error = null
                     }
                 }
             }
@@ -133,10 +140,13 @@ class SearchedPlayersFragment:Fragment() {
             }
         })
 
-        searchButton.setOnClickListener{
-            shimmer.visibility = View.VISIBLE
-            shimmer.startShimmer()
-            vm.getSearchPlayerResults(20, searchField.text.toString())
+        searchField.setOnEditorActionListener { textView, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                shimmer.visibility = View.VISIBLE
+                shimmer.startShimmer()
+                vm.getSearchPlayerResults(20, textView.text.toString())
+            }
+            return@setOnEditorActionListener true
         }
 
     }

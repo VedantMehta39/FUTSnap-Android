@@ -13,4 +13,5 @@
     battery.\n\nIn order to receive price alerts in a timely manner, please turn off such settings. You
     may refer to https://dontkillmyapp.com to learn about the default settings on your phone and a
     way to turn off such settings.\nThank you!</string>
+    <string name="player_name">Player Name</string>
 </resources>

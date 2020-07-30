@@ -5,30 +5,30 @@
     android:layout_height="match_parent"
     >
 
-    <EditText
-        android:id="@+id/searchBar"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@id/linear_layout_recycler_view"
-        app:layout_constraintHorizontal_weight="0.8"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/enter"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/search_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/player_name"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         app:layout_constraintTop_toTopOf="parent"
-         />
-
-    <ImageButton
-        android:id="@+id/enter"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_menu_search"
-        app:layout_constraintHorizontal_weight="0.2"
         app:layout_constraintBottom_toTopOf="@id/linear_layout_recycler_view"
-        app:layout_constraintLeft_toRightOf="@id/searchBar"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:startIconDrawable="@drawable/ic_person_search_24px"
+        app:endIconMode="clear_text"
+        app:errorEnabled="true">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="textPersonName"
+            android:ems="10"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <LinearLayout
         android:id="@+id/linear_layout_recycler_view"
@@ -40,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        app:layout_constraintTop_toBottomOf="@id/search_bar_layout"
         >
 
         <com.facebook.shimmer.ShimmerFrameLayout
