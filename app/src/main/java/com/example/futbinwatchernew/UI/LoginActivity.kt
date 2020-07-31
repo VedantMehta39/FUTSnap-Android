@@ -3,6 +3,7 @@ package com.example.futbinwatchernew.UI
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -38,18 +39,22 @@ class LoginActivity: AppCompatActivity()  {
 
     lateinit var errorHandler:ErrorHandling
 
+    lateinit var googleSignInButton: SignInButton
+
+    lateinit var iv_app_logo:ImageView
 
     lateinit var spinner:ProgressBar
+
+    lateinit var sharedPrefRepo: SharedPrefRepo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        val googleSignInButton = findViewById<SignInButton>(R.id.google_sign_in_button)
+
+        iv_app_logo = findViewById(R.id.app_logo)
+        googleSignInButton = findViewById<SignInButton>(R.id.google_sign_in_button)
         spinner = findViewById(R.id.loading_spinner)
         auth = FirebaseAuth.getInstance()
-        if(auth.currentUser != null){
-            updateUI(false)
-        }
         googleSignInButton.setOnClickListener{
             signIn()
             spinner.visibility = View.VISIBLE
@@ -67,6 +72,12 @@ class LoginActivity: AppCompatActivity()  {
             supportFragmentManager,
             clientUtility::addOrUpdateTokenOnServer)
         googleSignInClient = GoogleSignIn.getClient(this,gso)
+        sharedPrefRepo = SharedPrefRepo(this, SharedPrefFileNames.CLIENT_REGISTRATION)
+        if(auth.currentUser != null &&
+            sharedPrefRepo.readFromSharedPref(SharedPrefsTags.CLIENT_ID) != 0){
+            updateUI(false)
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -97,7 +108,6 @@ class LoginActivity: AppCompatActivity()  {
                     val client:Client?
                     val loggedInUserEmail = auth.currentUser!!.email!!
 
-                    val sharedPrefRepo = SharedPrefRepo(this, SharedPrefFileNames.CLIENT_REGISTRATION)
                     val firebaseToken = sharedPrefRepo.readFromSharedPref(SharedPrefsTags.FIREBASE_TOKEN_KEY) as String?
                     if(task.result!!.additionalUserInfo!!.isNewUser){
                         client = Client(0, loggedInUserEmail,firebaseToken!!,null)
@@ -135,17 +145,17 @@ class LoginActivity: AppCompatActivity()  {
                             when (response) {
                                 is NetworkResponse.Success -> {
                                     sharedPrefRepo.writeToSharedPref(SharedPrefsTags.CLIENT_ID, response.data)
+                                    updateUI(task.result!!.additionalUserInfo!!.isNewUser)
                                 }
                                 is NetworkResponse.Failure -> {
-                                    ErrorHandling(this,
-                                        supportFragmentManager,
-                                        clientUtility::addOrUpdateTokenOnServer)
-                                        .handle(response.error)
+                                    spinner.visibility = View.GONE
+                                    iv_app_logo.visibility = View.GONE
+                                    googleSignInButton.visibility = View.GONE
+                                    errorHandler.handle(response.error)
                                     auth.currentUser!!.delete()
                                 }
 
                             }
-                            updateUI(task.result!!.additionalUserInfo!!.isNewUser)
                         })
                     }
                 }
