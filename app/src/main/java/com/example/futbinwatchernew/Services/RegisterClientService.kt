@@ -31,6 +31,7 @@ import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -60,6 +61,7 @@ class RegisterClientService:FirebaseMessagingService() {
 
 
     private fun sendNotification(data: Map<String,String>){
+
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -96,12 +98,23 @@ class RegisterClientService:FirebaseMessagingService() {
             .setContentTitle(parseDataForTitle(data))
             .setContentText(parseDataForBody(data))
             .setContentIntent(pendingIntent)
-            .setSmallIcon(arrowIcon)
-            .setColor(ContextCompat.getColor(this, arrowColor))
-            .setLargeIcon(BitmapFactory.decodeResource(resources,R.mipmap.ic_launcher_foreground))
+            .setSmallIcon(R.mipmap.ic_launcher_foreground)
+            .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+            .setLargeIcon(AppCompatResources.getDrawable(this,arrowIcon)!!.toBitmap())
+            .setGroup(data["Name"])
 
-        val notification = builder.build()
-        manager.notify(Random.nextInt(),notification)
+        val summaryBuilder = NotificationCompat.Builder(this,
+            "Alert")
+            .setSmallIcon(R.mipmap.ic_launcher_foreground)
+            .setGroup(data["Name"])
+            .setGroupSummary(true)
+            .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+
+
+
+        manager.notify(Random.nextInt(),builder.build())
+        manager.notify(data["Id"]!!.toInt(),summaryBuilder.build())
+
     }
 
     private fun parseDataForTitle(data:Map<String,String>): String {
