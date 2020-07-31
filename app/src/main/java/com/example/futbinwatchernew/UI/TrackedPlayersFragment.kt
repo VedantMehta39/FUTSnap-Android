@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +20,7 @@ import com.example.futbinwatchernew.Network.ResponseModels.PlayerTrackingRequest
 import com.example.futbinwatchernew.UI.ErrorHandling.ErrorHandling
 import com.example.futbinwatchernew.UI.ViewModels.CustomViewModelFactory
 import com.example.futbinwatchernew.Utils.*
+import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -89,7 +91,13 @@ class TrackedPlayersFragment: Fragment() {
 
         if(!mainActivityVm.allPlayerTrackingRequests.hasActiveObservers()){
             mainActivityVm.allPlayerTrackingRequests.observe(viewLifecycleOwner, Observer {
-                adapter.updateData(it)
+                if(it.isEmpty()){
+                    DynamicToast.make(requireContext(), "You have no player tracking requests!",
+                        Toast.LENGTH_LONG).show()
+                }
+                else{
+                    adapter.updateData(it)
+                }
             })
         }
     }
