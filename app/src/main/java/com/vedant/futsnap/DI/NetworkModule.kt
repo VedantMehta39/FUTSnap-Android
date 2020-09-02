@@ -13,7 +13,7 @@ import java.lang.reflect.Type
 import javax.inject.Named
 
 const val SEARCH_BASE_URL = "https://www.futbin.com"
-const val PRICE_BASE_URL = "https://futbin.org/futbin/api/fetchPlayerInformation/"
+const val PRICE_BASE_URL = "https://futbin.org/futbin/api/"
 const val SERVICE_BASE_URL = "https://futsnap.prescient.co.in/api/"
 
 @Module

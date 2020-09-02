@@ -11,7 +11,7 @@ interface ApiClient {
     @GET ("/search?extra=1&v=1")
     suspend fun searchPlayerNames(@Query("year") fifaVersion:Int,@Query("term") searchTerm:String ):List<SearchPlayerResponse>
 
-    @GET("?platform=PS")
+    @GET("fetchPlayerInformation")
     suspend fun getCurrentPriceFor(@Query("ID")playerId:Int,@Query("platform")platform:Platform):PlayerPriceWrapperResponse
 
     @GET("Clients/{email}")
