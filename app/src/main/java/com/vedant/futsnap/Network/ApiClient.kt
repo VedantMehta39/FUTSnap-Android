@@ -1,18 +1,18 @@
 package com.vedant.futsnap.Network
 
-import com.vedant.futsnap.UI.Models.Platform
-import com.vedant.futsnap.Network.ResponseModels.PlayerPriceWrapperResponse
 import com.vedant.futsnap.Network.ResponseModels.SearchPlayerResponse
 import com.vedant.futsnap.Network.ResponseModels.Client
 import com.vedant.futsnap.Network.ResponseModels.PlayerTrackingRequest
+import com.vedant.futsnap.UI.Models.Platform
 import retrofit2.http.*
+import java.util.*
 
 interface ApiClient {
     @GET ("/search?extra=1&v=1")
     suspend fun searchPlayerNames(@Query("year") fifaVersion:Int,@Query("term") searchTerm:String ):List<SearchPlayerResponse>
 
-    @GET("fetchPlayerInformation")
-    suspend fun getCurrentPriceFor(@Query("ID")playerId:Int,@Query("platform")platform:Platform):PlayerPriceWrapperResponse
+    @GET("/{year}/playerPrices")
+    suspend fun getCurrentPriceFor(@Path("year") fifaVersion:Int, @Query("player")playerId:Int):EnumMap<Platform, Int?>
 
     @GET("Clients/{email}")
     suspend fun getClientByEmail(@Path("email") email:String):Client

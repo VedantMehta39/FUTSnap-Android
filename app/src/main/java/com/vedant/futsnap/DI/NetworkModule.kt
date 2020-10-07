@@ -1,19 +1,19 @@
 package com.vedant.futsnap.DI
 
 import com.vedant.futsnap.Network.ApiClient
-import com.vedant.futsnap.Network.FUTBINPriceDeserialiser
-import com.vedant.futsnap.Network.ResponseModels.PlayerPriceWrapperResponse
+import com.vedant.futsnap.Network.PriceDeserialiser
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.vedant.futsnap.UI.Models.Platform
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
+import java.util.*
 import javax.inject.Named
 
-const val SEARCH_BASE_URL = "https://www.futbin.com"
-const val PRICE_BASE_URL = "https://futbin.org/futbin/api/"
+const val FUTBIN_BASE_URL = "https://www.futbin.com"
 const val SERVICE_BASE_URL = "https://futsnap.prescient.co.in/api/"
 
 @Module
@@ -23,7 +23,7 @@ class NetworkModule {
     @Named("SEARCH")
     fun provideRetrofitForSearch():Retrofit {
         return Retrofit.Builder()
-             .baseUrl(SEARCH_BASE_URL)
+             .baseUrl(FUTBIN_BASE_URL)
              .addConverterFactory(GsonConverterFactory.create())
              .build()
     }
@@ -31,11 +31,11 @@ class NetworkModule {
     @Provides
     @Named("PRICE")
     fun provideRetrofitForPrice():Retrofit{
-        val responseType: Type = object: TypeToken<PlayerPriceWrapperResponse>() {}.type
+        val responseType: Type = object: TypeToken<EnumMap<Platform, Int?>>() {}.type
         return Retrofit.Builder()
-            .baseUrl(PRICE_BASE_URL)
+            .baseUrl(FUTBIN_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().
-                registerTypeAdapter(responseType, FUTBINPriceDeserialiser()).create()))
+                registerTypeAdapter(responseType, PriceDeserialiser()).create()))
             .build()
     }
 
