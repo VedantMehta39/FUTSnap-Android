@@ -18,13 +18,42 @@ class SearchPlayerViewModel(var apiClient:ApiClient):ViewModel() {
         viewModelScope.launch {
             try {
                 val results = apiClient.searchPlayerNames(fifaVersion, searchTerm)
-                searchPlayersResult.value =  results
+                val transformedResults = mutableListOf<SearchPlayerResponse>()
+                results.forEach {
+                    transformedResults.add(
+                        SearchPlayerResponse(getPlayerIdFromImageUrl(it.playerImage),it.playerName,
+                            it.playerRating, it.playerImage))
+                }
+                searchPlayersResult.value =  transformedResults
             }
             catch (e:Exception){
-                error.value = Event(Error.GeneralError("Couldn't find any players or couldn't connect to " +
-                        "FUTBIN Servers. Please try again!"))
+                error.value = Event(Error.GeneralError("Couldn't find any players or couldn't connect to the " +
+                        "servers. Please try again!"))
             }
         }
+    }
+
+    private fun getPlayerIdFromImageUrl(url:String): Int {
+        val endIndex = url.length - 1
+        var startRecording = false
+        var idImage = ""
+        for (i in endIndex downTo 0 step 1){
+            if (startRecording){
+                if (url[i] == '/'){
+                    break
+                }
+                idImage = url[i] + idImage
+            }
+            else if(url[i] == '?'){
+                startRecording = true
+            }
+        }
+
+        val idImageLen = idImage.length
+
+        return idImage.substring(IntRange(0,idImageLen- 1 - 4 )).toInt()
+
+
     }
 
 
