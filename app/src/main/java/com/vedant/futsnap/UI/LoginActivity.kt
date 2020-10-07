@@ -8,7 +8,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.vedant.futsnap.FUTBINWatcherApp
+import com.vedant.futsnap.FUTSnapApp
 import com.vedant.futsnap.Network.ResponseModels.Client
 import com.vedant.futsnap.R
 import com.vedant.futsnap.UI.ErrorHandling.ErrorHandling
@@ -67,7 +67,7 @@ class LoginActivity: AppCompatActivity()  {
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-        FUTBINWatcherApp.component.inject(this)
+        FUTSnapApp.component.inject(this)
         errorHandler = ErrorHandling(this,
             supportFragmentManager,
             clientUtility::addOrUpdateTokenOnServer)

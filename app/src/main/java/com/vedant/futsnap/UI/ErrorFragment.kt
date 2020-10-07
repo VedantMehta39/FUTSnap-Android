@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.vedant.futsnap.FUTBINWatcherApp
+import com.vedant.futsnap.FUTSnapApp
 import com.vedant.futsnap.Network.ResponseModels.Client
 import com.vedant.futsnap.UI.ViewModels.MainActivityViewModel
 import com.vedant.futsnap.R
@@ -38,7 +38,7 @@ class ErrorFragment(private val error: Error, private val retryAction:
     }
 
     override fun onAttach(context: Context) {
-        FUTBINWatcherApp.component.inject(this)
+        FUTSnapApp.component.inject(this)
         super.onAttach(context)
     }
 

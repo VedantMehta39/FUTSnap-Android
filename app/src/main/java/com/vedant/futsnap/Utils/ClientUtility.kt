@@ -2,7 +2,7 @@ package com.vedant.futsnap.Utils
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.vedant.futsnap.FUTBINWatcherApp
+import com.vedant.futsnap.FUTSnapApp
 import com.vedant.futsnap.Network.ApiClient
 import com.vedant.futsnap.Network.ResponseModels.Client
 import com.vedant.futsnap.UI.ErrorHandling.Error
@@ -45,7 +45,7 @@ class ClientUtility @Inject constructor( @Named("SERVICE") var apiClient: ApiCli
     }
 
     private fun addClient(client: Client): LiveData<NetworkResponse<Int>> {
-        client.MaxNumberOfRequests = FUTBINWatcherApp.maxNofOfTrackingRequests
+        client.MaxNumberOfRequests = FUTSnapApp.maxNofOfTrackingRequests
         return liveData {
             try {
                 val newClientId = apiClient.postClient(client)
@@ -57,7 +57,7 @@ class ClientUtility @Inject constructor( @Named("SERVICE") var apiClient: ApiCli
     }
 
     private fun editClient(client: Client): LiveData<NetworkResponse<Int>> {
-        client.MaxNumberOfRequests = FUTBINWatcherApp.maxNofOfTrackingRequests
+        client.MaxNumberOfRequests = FUTSnapApp.maxNofOfTrackingRequests
         return liveData {
             try {
                 val clientId = apiClient.putClient(client.Id, client)

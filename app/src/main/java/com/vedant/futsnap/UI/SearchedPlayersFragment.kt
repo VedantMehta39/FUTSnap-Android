@@ -50,7 +50,7 @@ class SearchedPlayersFragment:Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        FUTBINWatcherApp.component.inject(this)
+        FUTSnapApp.component.inject(this)
 
         val vm: SearchPlayerViewModel = ViewModelProvider(this,customViewModelFactory).
         get(SearchPlayerViewModel::class.java)
@@ -141,7 +141,7 @@ class SearchedPlayersFragment:Fragment() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH){
                 shimmer.visibility = View.VISIBLE
                 shimmer.startShimmer()
-                vm.getSearchPlayerResults(20, textView.text.toString())
+                vm.getSearchPlayerResults(21, textView.text.toString())
             }
             return@setOnEditorActionListener true
         }

@@ -4,7 +4,7 @@ import android.app.Application
 import com.vedant.futsnap.DI.ApplicationComponent
 import com.vedant.futsnap.DI.DaggerApplicationComponent
 
-class FUTBINWatcherApp:Application() {
+class FUTSnapApp:Application() {
     companion object{
         lateinit var component:ApplicationComponent
         private set

@@ -52,7 +52,7 @@ class SinglePlayerDialog(val data: PlayerDialogFragModel) : DialogFragment() {
         val view = requireActivity().layoutInflater.inflate(R.layout.single_player_dialog, null)
         val dialog = getBaseDialog(view)
         dialog.show()
-        FUTBINWatcherApp.component.inject(this)
+        FUTSnapApp.component.inject(this)
         val vm = ViewModelProvider(
             this,
             customViewModelFactory

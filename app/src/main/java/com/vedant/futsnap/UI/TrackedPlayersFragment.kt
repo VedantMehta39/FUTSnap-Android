@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.vedant.futsnap.FUTBINWatcherApp
+import com.vedant.futsnap.FUTSnapApp
 import com.vedant.futsnap.UI.ViewModels.MainActivityViewModel
 import com.vedant.futsnap.UI.Models.Platform
 import com.vedant.futsnap.UI.Models.PlayerDialogFragModel
@@ -37,7 +37,7 @@ class TrackedPlayersFragment: Fragment() {
         fun newInstance():TrackedPlayersFragment{
             if(fragment == null){
                 fragment = TrackedPlayersFragment()
-                FUTBINWatcherApp.component.inject(fragment!!)
+                FUTSnapApp.component.inject(fragment!!)
             }
             return fragment!!
         }
